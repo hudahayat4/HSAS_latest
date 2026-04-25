@@ -1,0 +1,161 @@
+:root {
+    --primary-teal: #12939a;
+    --border-color: #ddd;
+}
+
+/* ===============================
+   1. BODY RESET
+   =============================== */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #fcfcfc;
+    font-family: Arial, sans-serif;
+}
+
+/* =====================================
+   2. GLOBAL CONTENT WIDTH (JUST NICE ✨)
+   ===================================== */
+.content-wrapper {
+    width: 100%;
+    max-width: 900px;       /* ⭐ balanced width */
+    margin: 0 auto;
+    padding: 0 20px;        /* responsive spacing */
+    box-sizing: border-box;
+}
+
+/* =====================================
+   3. MAIN PAGE CONTAINER
+   ===================================== */
+.appointment-container {
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.35s ease-in;
+}
+
+/* =====================================
+   4. BREADCRUMB AREA
+   ===================================== */
+.breadcrumb-area {
+    width: 100%;
+    max-width: 900px;
+    margin: 30px auto 15px;
+    font-size: 14px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.back-link {
+    text-decoration: none;
+    color: var(--primary-teal);
+    font-weight: 500;
+}
+
+/* =====================================
+   5. RECEIPT / CARD
+   ===================================== */
+.receipt-card {
+    background: #fff;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 900px;
+    padding: 35px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+/* =====================================
+   6. RECEIPT CONTENT
+   ===================================== */
+.header-center {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    width: 110px;
+    margin-bottom: 10px;
+}
+
+.thank-you-text {
+    font-size: 18px;
+    color: #333;
+}
+
+.section-title-small {
+    font-weight: bold;
+    color: var(--primary-teal);
+    margin-bottom: 15px;
+}
+
+.date-time-row {
+    display: flex;
+    gap: 50px;
+    margin: 20px 0;
+    font-weight: 500;
+}
+
+/* =====================================
+   7. BUTTON AREA (ALIGNED PERFECTLY)
+   ===================================== */
+.button-group-action {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.btn-medical-custom {
+    background-color: var(--primary-teal);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-cancel-custom {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* =====================================
+   8. HEADER FULL WIDTH FIX
+   ===================================== */
+header,
+.header-container {
+    width: 100%;
+    margin: 0;
+    display: flex;
+}
+
+/* =====================================
+   9. FADE IN ANIMATION
+   ===================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,133 @@
+@charset "UTF-8";
+
+.bg-cover {
+	background: linear-gradient(
+					rgba(255,255,255,0.8),
+					rgba(255,255,255,0.8)
+					),
+				url('../image/background.jpg');
+	background-size: cover;
+	background-position: center;
+}
+
+/*untuk button Register*/
+.btn-dark {
+	background-color: #009FA5;
+	border-color: #009FA5;
+}
+
+.btn-dark:hover {
+	background-color: #D8EEEE;
+	border-color: #D8EEEE;
+	color: #000;
+}
+
+/*untuk button Clear Form*/
+.btn-outline-clear {
+	background-color: transparent;
+	border: 2px solid #009FA5;
+	color: #009FA5;
+}
+
+.btn-outline-clear:hover {
+	background-color: #D8EEEE;
+	border-color: #D8EEEE;
+	color: #000;
+}
+
+/*untuk log in page*/
+.bg-page {
+  background-color: #D8EEEE;
+}
+
+.floating-alert {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  width: 80%;
+  max-width: 600px;
+}
+
+.bg-image {
+	background-image: url('../image/Juzcare.jpg');
+	background-size: cover;
+	background-position: center;
+	min-height: 100vh;
+}
+
+.card {
+	border-radius: 0.75rem;
+	overflow: hidden;
+	min-height: 500px;
+}
+
+.btn-role {
+  border: 2px solid #009FA5;
+  color: #009FA5;
+  background-color: transparent;
+  padding: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  width: 100%;
+  box-shadow: none;
+}
+
+.btn-role:hover,
+.btn-role.active {
+	background-color: #009FA5;
+	border-color: #009FA5;
+	color: #fff;
+}
+
+.card-image-bg {
+  background-color: #009FA5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/*untuk verify account*/
+
+/*Input box untuk 6-digit code*/
+.code-input {
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+/*Mesej error bila user masuk huruf*/
+.error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/*Link Resend*/
+.resend-link {
+    color: #0d6efd;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/*Link Resend bila hover*/
+.resend-link:hover {
+    color: #084298;
+}
+
+/*Link Resend bila cooldown aktif*/
+.resend-link.disabled {
+    color: grey;
+    pointer-events: none;
+}
+
+/*Button verify*/
+.verify-btn {
+  width: calc(3rem * 6 + 0.5rem * 5);
+  max-width: 100%;
+}

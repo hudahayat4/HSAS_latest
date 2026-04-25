@@ -1,0 +1,34 @@
+@charset "UTF-8";
+
+.navbar{
+	background-color : #009FA5;
+}
+
+.navbar-brand{
+	font-weight : regular;
+	font-size : 20px;
+	color : #040303 !important;
+}
+
+.nav-link.logout {
+	border: 1px solid black;
+	border-radius : 25px;
+	height : 34px;
+	width : 122px;
+	text-align : center;
+	padding : 0;
+}
+
+.nav-link{
+	color: #040303 !important;
+	margin-right : 20px;
+}
+
+.nav-link.active {
+	background-color : #D8EEEE;
+	border-radius : 25px;
+	box-shadow : 2px 2px rgba(0, 0, 0, 0.5);
+	padding : 6px 16px;
+	color : #040303 !important;
+}
+

@@ -1,0 +1,93 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #d1e9e9;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+   width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+}
+
+
+.content-wrapper {
+    width: 100%;
+    max-width: 900px;
+}
+
+/* The White Card */
+.content-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+
+.page-title {
+    color: #1a237e; /* Dark blue color from screenshot */
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Search Bar Styling */
+.search-container {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.search-container i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f1f1f1;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+/* Package Card Styling */
+.packages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.package-card {
+    background-color: #dcf0f0; /* Light teal/blue background */
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.package-image img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 20px;
+}
+
+.package-details p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.package-label strong {
+    font-weight: 600;
+}

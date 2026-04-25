@@ -1,0 +1,104 @@
+:root {
+    --brand-teal: #008080;
+    --brand-teal-light: #e0f2f2;
+    --brand-blue: #4e5df8;
+    --bg-light: #f8f9fa;
+}
+
+body {
+    background-color: var(--bg-light);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    margin: 0;
+}
+
+/* This centers the whole list and stops the "Too Big" issue */
+.list-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+    width: 100%;
+}
+
+.list-container {
+    width: 100%;
+    max-width: 1000px; /* Limits the width for large screens */
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.header-row h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.add-btn {
+    background-color: var(--brand-teal);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-btn:hover { background-color: #006666; }
+
+/* Card Styling */
+.team-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px 35px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-left: 8px solid var(--brand-teal); /* The teal accent line */
+}
+
+.card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.member-info { display: flex; align-items: center; }
+
+.avatar-circle {
+    width: 55px;
+    height: 55px;
+    background-color: var(--brand-teal-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+.avatar-circle i { color: var(--brand-teal); font-size: 24px; }
+
+.name-meta { display: flex; flex-direction: column; }
+
+.member-name { font-weight: 700; font-size: 1.2rem; color: #333; }
+
+.member-role { color: #666; font-size: 0.95rem; }
+
+/* The "View Details" button from your image */
+.view-btn {
+    text-decoration: none;
+    color: var(--brand-blue);
+    border: 2px solid var(--brand-blue);
+    padding: 8px 22px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.view-btn:hover {
+    background-color: var(--brand-blue);
+    color: white;
+}

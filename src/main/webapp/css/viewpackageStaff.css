@@ -1,0 +1,132 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #d1e9e9;
+    margin: 0;
+    padding: 0;
+}
+
+
+.main-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+}
+
+.content-wrapper {
+    width: 100%;
+    max-width: 900px;
+}
+
+.content-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.page-title {
+    color: #1a237e;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Search */
+.search-container {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.search-container i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background-color: #f1f1f1;
+}
+
+/* Package cards */
+.packages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  
+}
+
+.package-card {
+    background-color: #dcf0f0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+}
+
+.package-image img {
+    width: 80px;
+    height: 60px;
+    border-radius: 4px;
+    margin-right: 20px;
+    object-fit: cover;
+}
+
+.package-details {
+    flex-grow: 1;
+}
+
+.package-details p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+/* Update button RIGHT */
+.update-btn-wrapper {
+    margin-left: auto;
+}
+
+/* Add button BELOW list */
+.add-btn-wrapper {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.error-message,
+.error-icon {
+    display: none;
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.error-icon {
+    margin-left: 5px;
+}
+
+/* Show error when active */
+.error-active .error-message,
+.error-active .error-icon {
+    display: inline;
+}
+
+/* Show errors when parent .mb-3 has .error-active */
+.mb-3.error-active .error-message,
+.mb-3.error-active .error-icon {
+    display: block;
+}
+
+/* Optional: highlight input with error */
+.mb-3.error-active input,
+.mb-3.error-active select {
+    border-color: red;
+}
+

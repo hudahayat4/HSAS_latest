@@ -1,0 +1,233 @@
+/* --- 1. Variables & Base --- */
+:root {
+    --brand-teal: #008080;
+    --brand-teal-dark: #006666;
+    --action-blue: #4361ee; 
+    --neutral-gray: #6c757d;
+    --bg-light: #f8f9fa;
+    --input-readonly: #f1f3f5; /* Gray color for locked fields */
+}
+
+body {
+    background-color: #eef7f7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.profile-container {
+    background: white;
+    width: 100%;
+    max-width: 800px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* --- 2. Header --- */
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+
+.user-info { display: flex; align-items: center; }
+
+.avatar-circle {
+    width: 80px; height: 80px;
+    background-color: #e0f2f2; 
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    margin-right: 20px;
+    border: 2px solid var(--brand-teal);
+}
+
+.avatar-circle i { font-size: 40px; color: var(--brand-teal); }
+
+.name-meta h1 { font-size: 22px; margin: 0; font-weight: 700; color: #2d3436; text-transform: uppercase; }
+.name-meta p { color: #636e72; margin: 0; font-size: 14px; }
+
+/* --- 3. Unified Inputs (Profile & Modal) --- */
+.form-grid {
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 20px; 
+}
+
+.form-group label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: 600; 
+    font-size: 13px;
+    color: #555; 
+    text-transform: uppercase;
+}
+
+/* This targets all profile and modal inputs to be identical in size */
+.form-group input,
+.modal-body-custom .form-control {
+    width: 100%;
+    height: 45px; /* Unified height */
+    padding: 12px 15px;
+    border-radius: 10px !important; /* Uniform rounded corners */
+    font-size: 15px;
+    box-sizing: border-box;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+/* Gray style for Read-Only (DOB, Full Name, Age, IC) */
+.locked-field {
+    background-color: var(--input-readonly) !important;
+    border: 1px solid #dee2e6 !important;
+    color: #777 !important;
+    cursor: not-allowed;
+}
+
+/* Teal border for Editable (Phone, Email) */
+.editable-field {
+    border: 1px solid var(--brand-teal) !important;
+    background-color: #fff !important;
+}
+
+/* --- 4. Unified Buttons --- */
+.btn-edit-link, 
+.modal-footer-custom .btn {
+    height: 45px; /* Matches input height */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 25px;
+    border-radius: 10px !important; /* Matches input rounded corners */
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Main Profile Edit Button */
+.btn-edit-link {
+    background-color: var(--action-blue);
+    color: white !important;
+}
+
+/* Modal Specific Buttons */
+.modal-footer-custom .btn-secondary {
+    background-color: #fff;
+    border: 1px solid #ccc !important;
+    color: #333;
+}
+
+.modal-footer-custom .btn-primary {
+    background-color: var(--brand-teal);
+    border: 1px solid var(--brand-teal-dark) !important;
+    color: white !important;
+}
+
+/* --- 5. Modal Container --- */
+.modal-box {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px; /* Matches profile container */
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.modal-header-custom {
+    display: flex;
+    justify-content: center; /* Center the title now that the X is gone */
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.modal-header-custom h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+}
+
+
+
+/* Specific styling for the Change Password button in the header */
+.link-password-btn {
+    height: 45px; /* Matches Edit button and Inputs */
+    padding: 0 20px;
+    border-radius: 10px !important;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    /* Style: White background with a dark border to distinguish it from Edit */
+    background-color: #ffffff;
+    border: 1px solid #333 !important;
+    color: #333;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.link-password-btn:hover {
+    background-color: #f8f9fa;
+    border-color: var(--brand-teal) !important;
+    color: var(--brand-teal);
+} 
+/* --- White Modal Buttons --- */
+.modal-btn-white {
+    height: 45px;
+    padding: 0 25px;
+    border-radius: 10px;
+    background-color: #ffffff !important;
+    border: 1px solid #ccc !important;
+    color: #333 !important;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.modal-btn-white:hover {
+    background-color: #f8f9fa !important;
+    border-color: var(--brand-teal) !important;
+    color: var(--brand-teal) !important;
+}
+
+/* Optional: slightly stronger Update button */
+.modal-btn-update {
+    border-color: var(--brand-teal) !important;
+}/* Dalam file CSS */
+div.swal2-container .my-rounded-popup {
+    border-radius: 15px !important;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+
+div.swal2-container .my-confirm-btn {
+    background-color: #008080 !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 25px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}

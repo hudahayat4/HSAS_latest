@@ -1,0 +1,109 @@
+/* Container Card */
+.appointment-card {
+    width: 100%;
+    max-width: 800px;
+    background: #fff;
+    border-radius: 18px; /* Lebih melengkung seperti gambar 1 */
+    padding: 12px 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+    border: 1px solid #f0f0f0;
+}
+
+.appointment-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   
+    width: 100%;
+}
+
+
+/* Tarikh (Tues 25) */
+.appointment-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    border-right: 1px solid #eee;
+    padding-right: 20px;
+}
+
+.appointment-date .day {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: -5px;
+}
+
+.appointment-date .date {
+    font-size: 28px;
+    font-weight: 800;
+    color: #333;
+}
+
+/* Info Masa & Pesakit (Tengah) */
+.appointment-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1.2;
+}
+
+.time-row, .patient-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.time-row i, .patient-row i {
+    width: 16px;
+    color: #6c757d;
+}
+
+/* Pakej (Lipid Profile) */
+.appointment-package {
+    flex: 1.5;
+}
+
+.package-name {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #12939a; /* Warna Teal seperti gambar 1 */
+    text-decoration: none;
+    margin-bottom: 2px;
+}
+
+.package-date {
+    font-size: 12px;
+    color: #aaa;
+    margin: 0;
+}
+
+/* Butang Aksi (Kanan) */
+.appointment-action {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-view, .btn-delete {
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-view { background: #e0f7f9; color: #12939a; }
+.btn-delete { background: #fce4e6; color: #d9534f; }
+
+.btn-view:hover { background: #b9eef3; }
+.btn-delete:hover { background: #f8d7da; }

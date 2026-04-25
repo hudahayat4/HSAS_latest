@@ -1,0 +1,172 @@
+/* --- Variables --- */
+:root {
+    --brand-teal: #008080;
+    --brand-teal-dark: #006666;
+    --bg-light: #f8f9fa;
+    --input-readonly: #eaeff2;
+}
+
+/* --- Layout --- */
+body {
+    background-color: var(--bg-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+
+.content-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.profile-container {
+    background: white;
+    width: 100%;
+    max-width: 800px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* --- Header Section --- */
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.user-info { display: flex; align-items: center; }
+
+.avatar-circle {
+    width: 80px; height: 80px;
+    background-color: #e0f2f2;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-right: 20px;
+}
+
+.avatar-circle i { font-size: 40px; color: var(--brand-teal); }
+
+/* --- Form Grid Layout --- */
+.form-grid {
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 20px; 
+}
+
+.form-group label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: bold; 
+    color: #333; 
+}
+
+/* --- Input Styling (Consistent 10px Edges) --- */
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px !important; /* MATCHING RADIUS */
+    border: 1px solid #ddd;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    box-sizing: border-box; 
+}
+
+.locked-field {
+    background-color: var(--input-readonly) !important; /* This provides the gray color */
+    border: 1px solid #ced4da !important;             /* Gray border */
+    color: #777 !important;                            /* Muted text */
+    cursor: not-allowed;                               /* Change cursor icon */
+    border-radius: 10px !important;                    /* Match your 10px preference */
+}
+
+.editable-field {
+    border: 1px solid var(--brand-teal) !important;
+    background-color: #fff;
+}
+
+/* --- Buttons Container --- */
+.btn-save-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center;
+    gap: 15px;
+}
+
+/* --- Save Button (Force Teal & Match Radius) --- */
+html body main form .btn-save-container button.btn-save-main[type="submit"] {
+    background-color: var(--brand-teal) !important;
+    background: var(--brand-teal) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--brand-teal-dark) !important;
+    border-radius: 10px !important; /* MATCHING RADIUS */
+    font-weight: bold !important;
+    height: 45px;
+    min-width: 150px;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+html body main form .btn-save-container button.btn-save-main[type="submit"]:hover {
+    background-color: var(--brand-teal-dark) !important;
+}
+
+/* --- Cancel Button (Match Radius) --- */
+.btn-cancel-link {
+    text-decoration: none;
+    color: #dc3545;
+    font-weight: bold;
+    border: 1px solid #dc3545;
+    border-radius: 10px !important; /* MATCHING RADIUS */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px; 
+    padding: 0 25px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.btn-cancel-link:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+
+/* SweetAlert Modern Minimalist Theme */
+.my-rounded-popup {
+    border-radius: 20px !important;
+    padding: 2rem !important;
+}
+
+.my-confirm-btn {
+    background-color: #008080 !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 30px !important;
+    border-radius: 8px !important;
+    margin-left: 10px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.my-cancel-btn {
+    background-color: #f1f1f1 !important;
+    color: #666 !important;
+    border: none !important;
+    padding: 10px 30px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.my-confirm-btn:hover { background-color: #006666 !important; }
+.my-cancel-btn:hover { background-color: #e5e5e5 !important; }
+

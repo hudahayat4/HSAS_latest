@@ -1,0 +1,147 @@
+/* --- 1. GLOBAL SETTINGS --- */
+:root {
+    --primary: #3CACAE;      
+    --secondary: #d8eeee;    
+    --juzcare-blue: linear-gradient(120deg, #004085, #007bff); 
+    --dark: #333333;
+    --light-bg: #f0f4f7;
+    --white: #ffffff;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--dark);
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 25px;
+}
+
+/* --- 2. WELCOME SECTION --- */
+.welcome-section {
+    margin-bottom: 25px;
+}
+.welcome-section h1 { color: #007bff; font-size: 2.2rem; font-weight: 700; }
+.welcome-section p { color: #666; font-size: 1.1rem; }
+
+/* --- 3. GRID SYSTEM (KUNCI PENYELESAIAN) --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr; 
+    gap: 30px; 
+    align-items: stretch; /* Memastikan kolum kiri & kanan sama tinggi */
+}
+
+.main-content-area {
+    display: flex;
+    flex-direction: column; /* Susun Banner & Appointment secara menegak */
+}
+
+.info-box-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- 4. BANNER BOX --- */
+.banner-box {
+    background: var(--juzcare-blue);
+    color: white;
+    padding: 35px;
+    border-radius: 20px;
+    margin-bottom: 30px; /* Jarak antara banner dan kotak appointment */
+    position: relative;
+    overflow: hidden;
+}
+.banner-box h2 { font-size: 1.8rem; margin-bottom: 8px; z-index: 2; position: relative; }
+.banner-box p { max-width: 75%; opacity: 0.9; z-index: 2; position: relative; }
+.banner-icon {
+    position: absolute; right: -15px; bottom: -15px;
+    font-size: 8rem; opacity: 0.15; transform: rotate(-15deg);
+}
+
+/* --- 5. STYLED CARDS --- */
+.styled-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+}
+
+/* Kotak temujanji akan 'makan' baki ruang supaya selari dengan kanan */
+.appointment-card {
+    flex-grow: 1; 
+    margin-bottom: 0; /* Buang margin bawah pada kotak terakhir kolum kiri */
+}
+
+/* Kotak quote (kotak terakhir kolum kanan) juga buang margin bawah */
+.quote-card {
+    margin-bottom: 0;
+    background-color: var(--secondary) !important;
+    text-align: center;
+}
+
+.card-header {
+    background-color: var(--primary);
+    color: white;
+    padding: 18px 25px;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 30px;
+    flex-grow: 1; /* Biarkan body ambil ruang penuh */
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- 6. FREE STATE (CENTERING) --- */
+.free-state {
+    flex-grow: 1;
+    display: flex;
+    align-items: center; /* Center secara menegak */
+    justify-content: center; /* Center secara mendatar */
+    text-align: center;
+}
+
+.free-state i { font-size: 4.5rem; color: var(--primary); margin-bottom: 20px; opacity: 0.8; }
+.free-state h3 { color: var(--primary); font-size: 1.8rem; margin-bottom: 12px; }
+.free-state p { color: #888; font-style: italic; }
+
+/* --- 7. QUOTE & STATS --- */
+.chart-container {
+    height: 230px;
+    width: 100%;
+}
+
+.quote-card i { color: var(--primary); font-size: 1.2rem; margin-bottom: 10px; display: block; }
+.quote-card p { font-style: italic; font-size: 1.05rem; color: #444; }
+.quote-card small { display: block; margin-top: 10px; color: var(--primary); font-weight: 600; }
+
+/* --- 8. ANIMATIONS --- */
+.animate-card { opacity: 0; animation: fadeInUp 0.8s ease-out forwards; }
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.5s; }
+
+/* --- 9. RESPONSIVE --- */
+@media (max-width: 1100px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .appointment-card { margin-bottom: 30px; }
+}

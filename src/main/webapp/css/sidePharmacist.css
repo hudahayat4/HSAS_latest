@@ -1,0 +1,135 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+::after,
+::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+a{
+	text-decoration: none;
+}
+
+#sidebar a.sidebar-link {
+    text-decoration: none !important;
+    color: #141B34; /* optional: keep the text color */
+}
+
+li{
+	list-style: none;
+}
+
+h1{
+	font-weight: 600;
+	font-size: 1.5rem;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+   
+}
+
+.wrapper{
+	display: flex;
+}
+/*pic*/
+.sidebar-header {
+    gap: 0.5rem;
+}
+
+.sidebar-logo-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 10px; 
+}
+
+/*hide name*/
+.sidebar-logo-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #141B34;
+}
+
+.main{
+	min-height: 100vh;
+	width: 100%;
+	overflow: hidden;
+	transition: all 0.35s ease-in-out;
+	background-color: #D8EEEE;
+}
+
+#sidebar{
+	width: 70px;
+	min-width: 70px;
+	z-index: 1000;
+	transition: all .25s ease-in-out;
+	display: flex;
+	flex-direction: column;
+	background-color: #FFFFFF;
+}
+
+
+#sidebar.expand{
+	width: 260px;
+	min-width: 260px;
+}
+
+#toggle-btn{
+	background-color: transparent;
+	cursor: pointer;
+	border: 0;
+	padding: 1rem 1.5rem;
+}
+
+
+#toggle-btn i{
+	font-size: 1.5rem;
+	color: #141B34;
+}
+
+.sidebar-logo{
+	margin: auto 0;
+}
+
+.sidebar-logo a{
+	color: #141B34;
+	font-size: 1.15rem;
+	font-weight: 600;
+}
+
+/* Hide text when sidebar is collapsed */
+#sidebar:not(.expand) .sidebar-logo-text,
+#sidebar:not(.expand) a.sidebar-link span {
+    display: none;
+}
+
+.sidebar-nav{
+	padding: 2rem 0;
+	flex: 1 1 auto;
+}
+
+
+a.sidebar-link{
+	padding: .625rem 1.625rem;
+	color: #141B34;
+	display: block;
+	font-size: 0.9rem;
+	white-space: nowrap;
+	border-left: 3px solid transparent;
+}
+
+a.sidebar-link i{
+	font-size: 1.1rem;
+	margin-right: .75rem;
+}
+
+a.sidebar-link:hover{
+	background-color: #D8EEEE;
+	border-left: 3px solid #3b7ddd;
+}
+
+.sidebar-item {
+	position: relative;
+}

@@ -1,0 +1,124 @@
+:root {
+    --brand-teal: #008080;
+    --brand-teal-light: #e0f2f2;
+    --bg-light: #f8f9fa;
+}
+
+body {
+    background-color: var(--bg-light);
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+}
+
+/* FIX: Centering and Max-Width */
+.content-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.profile-container {
+    background: white;
+    width: 100%;
+    max-width: 1000px; /* Limits width */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.user-info { display: flex; align-items: center; }
+
+.avatar-circle {
+    width: 70px; height: 70px;
+    background-color: var(--brand-teal-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-right: 20px;
+}
+
+.avatar-circle i { font-size: 30px; color: var(--brand-teal); }
+
+.name-meta h1 { font-size: 24px; font-weight: bold; margin: 0; }
+.name-meta p { color: #666; margin: 0; }
+
+/* Grid Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.locked-field {
+    width: 100%;
+    padding: 12px;
+    background-color: #eaeff2 !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 10px !important;
+    color: #555;
+    cursor: not-allowed;
+}
+
+/* Container for the buttons */
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Primary Button: Edit Profile (Solid) */
+.btn-edit-link {
+    text-decoration: none;
+    background: var(--brand-teal); /* Using your teal brand color */
+    color: white !important;
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-edit-link:hover {
+    background: #006666;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 128, 128, 0.2);
+}
+
+/* Secondary Button: Change Password (Ghost/Outline) */
+.link-password-btn {
+    background: transparent;
+    border: 1px solid #ced4da;
+    color: #555;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.link-password-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+    color: #333;
+}
+
+.link-password-btn i {
+    margin-right: 5px;
+    font-size: 0.85rem;
+}

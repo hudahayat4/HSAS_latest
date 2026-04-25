@@ -1,0 +1,211 @@
+:root {
+    --primary: #3CACAE;
+    --secondary: #d8eeee;
+    --dark: #333;
+    --light: #f8f9fa;
+    --card-bg: #ffffff;
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Poppins', sans-serif; 
+}
+
+body {
+    background-color: #f0f4f7;
+    color: var(--dark);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- LAYOUT CONTAINER --- */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+    flex: 1;
+    width: 100%;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-card {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.5s; }
+
+/* --- WELCOME HEADER --- */
+.welcome-section {
+    margin-bottom: 30px;
+    text-align: left;
+}
+.welcome-section h1 { color: #007bff; font-size: 2.2rem; font-weight: 700; }
+.welcome-section p { color: #666; font-size: 1.1rem; }
+
+/* --- DASHBOARD GRID --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    /* Jarak antara kolum kiri dan kanan disamakan (30px) */
+    gap: 30px;
+    align-items: stretch; /* Memaksa kotak kiri & kanan sama tinggi */
+}
+
+/* --- BANNER BOX (Vibrant Blue Gradient) --- */
+.banner-box {
+    /* Gradient daripada Biru Gelap ke Biru 'Royal' */
+    background: linear-gradient(120deg, #004085, #007bff);
+    color: white;
+    padding: 40px;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    /* Bayang biru yang lebih dalam */
+    box-shadow: 0 10px 25px rgba(0, 64, 133, 0.3); 
+    transition: transform 0.3s ease;
+}
+
+.banner-box h2 { z-index: 2; position: relative; font-size: 28px; margin-bottom: 10px; }
+.banner-box p { z-index: 2; position: relative; opacity: 0.9; max-width: 80%; }
+
+/* --- INFO BOXES (SEBELAH KANAN) --- */
+.info-box-container {
+    display: flex;
+    flex-direction: column;
+    /* Jarak antara Upcoming Appointment dan Recent Results disamakan (30px) */
+    gap: 30px;
+}
+
+.styled-card {
+    border-radius: 15px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+/* Memastikan Recent Results memanjang ke bawah */
+#recent-results-card {
+    flex-grow: 1;
+}
+
+.card-header {
+    background-color: var(--primary);
+    color: white;
+    padding: 15px 20px;
+    font-weight: 600;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-body {
+    padding: 25px 20px;
+    background-color: #f9f9f9;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.card-body h5 { font-size: 20px; color: #333; margin-bottom: 5px; }
+
+.countdown-badge {
+    background: #fff; border: 1px solid var(--primary); color: var(--primary);
+    padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-top: 10px; font-size: 12px;
+}
+
+/* Imej hiasan dalam Recent Results */
+.results-placeholder-img {
+    width: 180px;
+    height: auto;
+    opacity: 0.9;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+/* --- CAROUSEL FEATURED PRODUCTS --- */
+.carousel-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 0 50px; 
+}
+
+.carousel-track-container {
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    gap: 20px;
+    list-style: none;
+    padding: 10px 0;
+}
+
+.product-card {
+    flex: 0 0 calc(33.333% - 13.5px); 
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    height: 220px;
+    padding: 0; /* Gambar penuh rapat ke tepi */
+    overflow: hidden;
+    display: flex;
+}
+
+.product-card img { 
+    width: 100%;      
+    height: 100%;
+    object-fit: cover; /* Gambar penuh kotak */
+}
+
+/* BUTTONS NAVIGATION */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: 1px solid #ddd;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.carousel-btn:hover { background: var(--primary); color: white; }
+.carousel-btn.left { left: 0; }
+.carousel-btn.right { right: 0; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .product-card { flex: 0 0 calc(50% - 10px); } 
+}
+
+@media (max-width: 600px) {
+    .product-card { flex: 0 0 100%; } 
+    .carousel-wrapper { padding: 0 40px; }
+}

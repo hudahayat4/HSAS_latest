@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+body {
+    background-color: #D8EEEE;
+}
+
+/*main card*/
+.main-card {
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+/*Bahagian kiri*/
+.left-section {
+    padding: 30px;
+    background-color: #ffffff;
+}
+
+/*Bahagian kanan*/
+.right-section {
+    background-color: #e9f5ff;
+    padding: 20px;
+}
+
+/*Welcome*/
+.welcome {
+    font-size: 28px;
+    font-weight: bold;
+    color: #555555;
+}
+
+/* Tajuk seksyen */
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 5px;
+}
+
+/*Package & time*/
+.package_name,
+.appointment_time {
+    font-size: 18px;
+    color: #555555;
+}
+
+/*Countdown*/
+.countdown {
+    font-size: 16px;
+    font-weight: 500;
+    color: #dc3545;
+    margin-top: 15px;
+}
+
+/*calendar*/
+.calendar {
+    background-color: #f0f0f0;
+    border: 1px dashed #cccccc;
+    padding: 20px;
+    text-align: center;
+    font-style: italic;
+    color: #666666;
+}
+
+/*Gambar promosi*/
+.promo-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/*Responsive*/
+@media (max-width: 768px) {
+    .left-section,
+    .right-section {
+        padding: 20px;
+    }
+
+    .welcome {
+        font-size: 24px;
+    }
+
+    .package_name,
+    .appointment_time {
+        font-size: 16px;
+    }
+}

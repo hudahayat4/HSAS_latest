@@ -1,0 +1,41 @@
+@charset "UTF-8";
+
+.footer-section {
+    background: linear-gradient(90deg, #009FAB 25%, #006870 59%, #004045 100%);
+    color: #fff;
+}
+
+.footer-menu li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+.footer-menu li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.footer-logo img {
+    max-width: 180px;
+}
+
+ul li {
+    margin-bottom: 12px;
+}
+
+form button.message-btn {
+	width : 156px;
+	height : 46px;
+    border-radius: 5px;
+    padding: 10px 25px; 
+    background : #fff;
+    border : 2px solid #009FAB;
+    color : #009FAB;
+}
+
+@media (max-width: 768px) {
+    .footer-menu li {
+        margin: 5px 10px;
+    }
+}
