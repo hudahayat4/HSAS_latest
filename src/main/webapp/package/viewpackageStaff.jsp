@@ -295,23 +295,26 @@
 
 							<input type="hidden" name="action" value="update"> <input
 								type="hidden" name="packageID" id="u_packageID">
+<div class="mb-3">
+    <label class="form-label">Package Name</label>
+    <input type="text" class="form-control"
+           id="u_packageName" name="packageName">
+    <small id="uNameError" class="text-danger"></small>
+</div>
 
-							<div class="mb-3">
-								<label class="form-label">Package Name</label> <input
-									type="text" class="form-control" name="packageName"
-									id="u_packageName">
-							</div>
+<div class="mb-3">
+    <label class="form-label">Package Price</label>
+    <input type="number" class="form-control"
+           id="u_packagePrice" name="packagePrice">
+    <small id="uPriceError" class="text-danger"></small>
+</div>
 
-							<div class="mb-3">
-								<label class="form-label">Price</label> <input type="number"
-									class="form-control" name="packagePrice" id="u_packagePrice">
-							</div>
-
-							<div class="mb-3">
-								<label class="form-label">Package Image</label> <input
-									type="file" class="form-control" name="packagePic">
-							</div>
-
+<div class="mb-3">
+    <label class="form-label">Package Image</label>
+    <input type="file" class="form-control"
+           id="u_packagePic" name="packagePic">
+    <small id="uImageError" class="text-danger"></small>
+</div>
 							<div class="mb-3">
 								<label class="form-label">Fasting Required</label><br> <input
 									type="radio" name="bfrReq" value="YES" id="u_bfr_yes">
@@ -380,6 +383,61 @@
 	    const contextPath = "${pageContext.request.contextPath}";
 
 	    confirmButton.addEventListener("click", function () {
+
+	        let isValid = true;
+
+	        const packageName = document.getElementById("u_packageName");
+	        const packagePrice = document.getElementById("u_packagePrice");
+	        const fileInput = document.getElementById("u_packagePic");
+
+	        // Clear previous errors
+	        document.getElementById("uNameError").textContent = "";
+	        document.getElementById("uPriceError").textContent = "";
+	        document.getElementById("uImageError").textContent = "";
+
+	        // Package Name
+	        if (packageName.value.trim() === "") {
+	            document.getElementById("uNameError").textContent =
+	                "Package name cannot be empty.";
+	            isValid = false;
+	        }
+
+	        // Package Price
+	        if (packagePrice.value === "") {
+	            document.getElementById("uPriceError").textContent =
+	                "Package price is required.";
+	            isValid = false;
+	        } else if (parseFloat(packagePrice.value) <= 0) {
+	            document.getElementById("uPriceError").textContent =
+	                "Package price must be greater than RM0.";
+	            isValid = false;
+	        }
+
+	        // Image Validation
+	        if (fileInput.files.length > 0) {
+
+	            const file = fileInput.files[0];
+	            const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+	            if (!allowedTypes.includes(file.type)) {
+	                document.getElementById("uImageError").textContent =
+	                    "Only JPG, JPEG and PNG images are allowed.";
+	                isValid = false;
+	            }
+
+	            if (file.size > 5 * 1024 * 1024) {
+	                document.getElementById("uImageError").textContent =
+	                    "Image size cannot exceed 5MB.";
+	                isValid = false;
+	            }
+	        }
+
+	        // Stop update if invalid
+	        if (!isValid) {
+	            return;
+	        }
+
+	        // Only confirmation popup
 	        Swal.fire({
 	            title: "Are you sure?",
 	            text: "Do you want to update this package?",
@@ -387,18 +445,15 @@
 	            showCancelButton: true,
 	            confirmButtonColor: "#009FA5",
 	            cancelButtonColor: "#d33",
-	            confirmButtonText: "Yes, update",
-	            cancelButtonText: "Cancel"
+	            confirmButtonText: "Yes, update"
 	        }).then((result) => {
 	            if (result.isConfirmed) {
-	                updateForm.submit(); 
-	            } else {
-	                updateModal.hide();
-	                window.location.href = contextPath + "/package/PackageController?action=list";
+	                updateForm.submit();
 	            }
 	        });
-	    });
 
+	    });
+	    
 	    // ---------------- Add Modal Validation ----------------
 	 // Get the form
 	    const form = document.getElementById('addPackageForm');
@@ -502,5 +557,26 @@
 	});
 
 </script>
+<c:if test="${not empty successMessage}">
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Success',
+    text: '${successMessage}'
+});
+</script>
+<c:remove var="successMessage" scope="session"/>
+</c:if>
+
+<c:if test="${not empty errorMessage}">
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: '${errorMessage}'
+});
+</script>
+<c:remove var="errorMessage" scope="session"/>
+</c:if>
 </body>
 </html>

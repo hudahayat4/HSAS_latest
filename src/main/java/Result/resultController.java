@@ -80,18 +80,22 @@ public class resultController extends HttpServlet {
 	        Result result = ResultDAO.getResultByAppointmentId(appointmentID);
 
 	        if (result != null) {
-	            // Set Appointment object for JSP
+
 	            request.setAttribute("apt", result.getApt());
-	            // Also set full Result object
 	            request.setAttribute("result", result);
 
-	            request.getRequestDispatcher("/result/viewresult.jsp").forward(request, response);
+	            request.getRequestDispatcher("/result/viewresult.jsp")
+	                   .forward(request, response);
+
 	        } else {
+
+	            request.getSession().setAttribute(
+	                "errorMessage",
+	                "The result is not available yet."
+	            );
+
 	            response.sendRedirect("resultController?action=list");
 	        }
-
-	    } else {
-	        response.sendRedirect("resultController?action=list");
 	    }
 	}
 

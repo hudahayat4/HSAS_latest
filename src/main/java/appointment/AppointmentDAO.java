@@ -114,28 +114,44 @@ public class AppointmentDAO {
 	}
 
 	public static List<appointment> getAllAppointmentsByCustomerId(int cusID) {
-		List<appointment> appointments = new ArrayList<>();
-		String sql = "SELECT a.*, p.packageName,c.custName FROM appointment a "
-				+ "JOIN package p ON a.packageID = p.packageID " + "JOIN customer c ON a.cusID = c.cusID "
-				+ "WHERE a.cusID = ? AND a.apptTime > CURRENT_TIMESTAMP ORDER BY a.apptDate DESC";
 
-		try (Connection conn = ConnectionManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, cusID);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				appointment apt = new appointment();
-				apt.setAppointmentID(rs.getInt("appointmentID"));
-				apt.setApptDate(rs.getDate("apptDate"));
-				apt.setApptTime(rs.getTimestamp("apptTime"));
-				apt.setPackageName(rs.getString("packageName"));
-				apt.setCustomerName(rs.getString("custName"));
-				appointments.add(apt);
-			}
-			ps.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return appointments;
+	    List<appointment> appointments = new ArrayList<>();
+
+	    String sql = "SELECT a.*, p.packageName, c.custName "
+	            + "FROM appointment a "
+	            + "JOIN package p ON a.packageID = p.packageID "
+	            + "JOIN customer c ON a.cusID = c.cusID "
+	            + "WHERE a.cusID = ? "
+	            + "ORDER BY a.apptDate DESC, a.apptTime DESC";
+
+	    try (Connection conn = ConnectionManager.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+	        ps.setInt(1, cusID);
+
+	        ResultSet rs = ps.executeQuery();
+
+	        while (rs.next()) {
+
+	            appointment apt = new appointment();
+
+	            apt.setAppointmentID(rs.getInt("appointmentID"));
+	            apt.setApptDate(rs.getDate("apptDate"));
+	            apt.setApptTime(rs.getTimestamp("apptTime"));
+	            apt.setPackageName(rs.getString("packageName"));
+	            apt.setCustomerName(rs.getString("custName"));
+
+	            appointments.add(apt);
+	        }
+
+	        rs.close();
+	        ps.close();
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return appointments;
 	}
 
 	public static void cancelAppointment(int appointmentID) throws SQLException {

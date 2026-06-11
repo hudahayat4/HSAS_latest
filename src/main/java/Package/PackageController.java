@@ -86,13 +86,19 @@ public class PackageController extends HttpServlet {
 
 	private void showImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		int id = Integer.parseInt(request.getParameter("id"));
-		byte[] img = PackageDAO.getPackageImage(id);
+	    int id = Integer.parseInt(request.getParameter("id"));
+	    byte[] img = PackageDAO.getPackageImage(id);
 
-		if (img != null) {
-			response.setContentType("image/jpeg");
-			response.getOutputStream().write(img);
-		}
+	    if (img != null) {
+
+	        response.setContentType("image/jpeg");
+	        response.getOutputStream().write(img);
+
+	    } else {
+
+	        response.sendError(HttpServletResponse.SC_NOT_FOUND,
+	                "Cannot display image");
+	    }
 	}
 
 	private void listAvailablePackage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -200,27 +206,48 @@ public class PackageController extends HttpServlet {
 
 	// UPDATE an existing package
 	private void updatePackage(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, SQLException, ServletException {
+	        throws IOException, SQLException, ServletException {
 
-		int packageID = Integer.parseInt(request.getParameter("packageID"));
-		String packageName = request.getParameter("packageName");
-		double packagePrice = Double.parseDouble(request.getParameter("packagePrice"));
-		String bfrReq = request.getParameter("bfrReq");
-		String isExist = request.getParameter("isExist");
+	    HttpSession session = request.getSession();
 
-		Part filePart = request.getPart("packagePic");
-		InputStream inputStream = (filePart != null && filePart.getSize() > 0) ? filePart.getInputStream() : null;
+	    int packageID = Integer.parseInt(request.getParameter("packageID"));
 
-		Package p = new Package();
-		p.setPackageID(packageID);
-		p.setPackageName(packageName);
-		p.setPackagePrice(packagePrice);
-		p.setBfrReq(bfrReq);
-		p.setIsExist(isExist);
-		p.setPackagePic(inputStream);
+	    // Check if record still exists
+	    Package existingPackage = PackageDAO.getPackagebyId(packageID);
 
-		PackageDAO.updatePackage(p);
+	    if (existingPackage == null) {
 
-		response.sendRedirect("PackageController?action=list");	
+	        session.setAttribute("errorMessage",
+	                "Previous data not found");
+
+	        response.sendRedirect("PackageController?action=list");
+	        return;
+	    }
+
+	    String packageName = request.getParameter("packageName");
+	    double packagePrice = Double.parseDouble(request.getParameter("packagePrice"));
+	    String bfrReq = request.getParameter("bfrReq");
+	    String isExist = request.getParameter("isExist");
+
+	    Part filePart = request.getPart("packagePic");
+	    InputStream inputStream =
+	            (filePart != null && filePart.getSize() > 0)
+	            ? filePart.getInputStream()
+	            : null;
+
+	    Package p = new Package();
+	    p.setPackageID(packageID);
+	    p.setPackageName(packageName);
+	    p.setPackagePrice(packagePrice);
+	    p.setBfrReq(bfrReq);
+	    p.setIsExist(isExist);
+	    p.setPackagePic(inputStream);
+
+	    PackageDAO.updatePackage(p);
+
+	    session.setAttribute("successMessage",
+	            "Successfully Updated Package");
+
+	    response.sendRedirect("PackageController?action=list");
 	}
 }
