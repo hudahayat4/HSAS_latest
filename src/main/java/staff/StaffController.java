@@ -159,11 +159,20 @@ public class StaffController extends HttpServlet {
 
 		// --- LOGIK 3: CREATE ACCOUNT (Kod asal anda) ---
 		try {
-			createStaffAccount(request, response);
-			response.sendRedirect(request.getContextPath() + "/log_in.jsp?status=success");
+		    createStaffAccount(request, response);
+
+		    response.sendRedirect(
+		        request.getContextPath()
+		        + "/teamaccount/StaffController?action=list"
+		    );
+		    return;
+
 		} catch (Exception e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Create failed");
+		    e.printStackTrace();
+		    response.sendError(
+		        HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		        "Create failed"
+		    );
 		}
 	}
 
