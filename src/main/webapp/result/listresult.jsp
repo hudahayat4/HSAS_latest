@@ -76,5 +76,19 @@
 			</div>
 		</div>
 <%@ include file="../footer.jsp" %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<c:if test="${not empty errorMessage}">
+	<script>
+	Swal.fire({
+    	icon: 'warning',
+    	title: 'Result Not Available',
+    	text: '${errorMessage}',
+    	confirmButtonColor: '#009FA5'
+	});
+	</script>
+	<c:remove var="errorMessage" scope="session"/>
+	</c:if>
+
 </body>
 </html>

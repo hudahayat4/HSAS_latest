@@ -115,24 +115,51 @@ public class AppointmentController extends HttpServlet {
 		}
 	}
 
-	private void viewAppointment(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String apptIdStr = request.getParameter("appointmentID");
+	private void viewAppointment(HttpServletRequest request,
+	        HttpServletResponse response)
+	        throws ServletException, IOException {
 
-		if (apptIdStr != null) {
-			int appointmentID = Integer.parseInt(apptIdStr);
-			appointment apt = AppointmentDAO.getAppointmentById(appointmentID);
+	    String apptIdStr = request.getParameter("appointmentID");
 
-			if (apt != null) {
-				request.setAttribute("apt", apt);
-				request.getRequestDispatcher("/appointment/viewapt.jsp").forward(request, response);
-			} else {
-				response.sendRedirect("AppointmentController?action=list"); // No appointment found
-			}
+	    if (apptIdStr != null) {
 
-		} else {
-			response.sendRedirect("AppointmentController?action=list"); // No ID provided
-		}
+	        int appointmentID = Integer.parseInt(apptIdStr);
+
+	        appointment apt =
+	                AppointmentDAO.getAppointmentById(appointmentID);
+
+	        if (apt != null) {
+
+	            Timestamp currentTime =
+	                    new Timestamp(System.currentTimeMillis());
+
+	            String status;
+
+	            if (apt.getApptTime().before(currentTime)) {
+	                status = "Expired";
+	            } else {
+	                status = "Upcoming";
+	            }
+
+	            request.setAttribute("status", status);
+	            request.setAttribute("apt", apt);
+
+	            request.getRequestDispatcher("/appointment/viewapt.jsp")
+	                    .forward(request, response);
+
+	        } else {
+
+	            response.sendRedirect(
+	                    "AppointmentController?action=list");
+
+	        }
+
+	    } else {
+
+	        response.sendRedirect(
+	                "AppointmentController?action=list");
+
+	    }
 	}
 
 	/**

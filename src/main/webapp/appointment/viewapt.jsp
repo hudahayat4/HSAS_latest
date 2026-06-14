@@ -50,6 +50,21 @@
                     <li>Cancellations must be 24 hours before.</li>
                 </ol>
             </div>
+        
+            <p>
+    <strong>Status :</strong>
+
+    <c:choose>
+        <c:when test="${status eq 'Upcoming'}">
+            <span class="badge bg-success">Upcoming</span>
+        </c:when>
+
+        <c:otherwise>
+            <span class="badge bg-secondary">Expired</span>
+        </c:otherwise>
+    </c:choose>
+
+</p>
         </div>
 
         <div class="button-group-action">
