@@ -20,6 +20,10 @@
     width: 100%;
 }
 
+.btn-delete:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
 
 /* Tarikh (Tues 25) */
 .appointment-date {

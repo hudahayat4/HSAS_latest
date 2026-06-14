@@ -3,6 +3,8 @@ package appointment;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import java.time.LocalDateTime;
+
 public class appointment {
     private int appointmentID;
     private int packageID;
@@ -52,5 +54,14 @@ public class appointment {
 
     public String getPharmacistName() { return pharmacistName; }
     public void setPharmacistName(String pharmacistName) { this.pharmacistName = pharmacistName; }
+
+
+    public boolean isPastAppointment() {
+        if (apptTime == null) {
+            return false;
+        }
+
+        return apptTime.toLocalDateTime().isBefore(LocalDateTime.now());
+    }
 
 }

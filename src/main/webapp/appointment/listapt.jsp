@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +13,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/listapt.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/listapt.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/footer.css">
 
@@ -58,8 +59,10 @@
 							<i class="fas fa-eye"></i>
 						</a>
 
-						<button class="btn-delete" data-id="${apt.appointmentID}">
-							<i class="fas fa-trash-alt"></i>
+						<button class="btn-delete"
+						    data-id="${apt.appointmentID}"
+						    ${apt.pastAppointment ? 'disabled' : ''}>
+						    <i class="fas fa-trash-alt"></i>
 						</button>
 					</div>
 				</div>
