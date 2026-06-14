@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 
+import Package.PackageDAO;
+
 @WebServlet("/account/CustomerController")
 @MultipartConfig(maxFileSize = 10485760)
 public class CustomerController extends HttpServlet {
@@ -49,28 +51,13 @@ public class CustomerController extends HttpServlet {
 	private void showImage(HttpServletRequest request, HttpServletResponse response)
 	        throws SQLException, IOException {
 
-	    int id = Integer.parseInt(request.getParameter("id"));
-	    byte[] img = CustomerDAO.getCustomerImage(id);
+		int id = Integer.parseInt(request.getParameter("id"));
+		byte[] img = CustomerDAO.getCustomerImage(id);
 
-	    response.setContentType("image/jpeg");
-
-	    if (img != null && img.length > 0) {
-	        response.getOutputStream().write(img);
-	    } else {
-	        // load default image from server
-	        String defaultPath = request.getServletContext()
-	                .getRealPath("/image/blank-profile-picture.png");
-
-	        FileInputStream fis = new FileInputStream(defaultPath);
-
-	        byte[] buffer = new byte[fis.available()];
-	        fis.read(buffer);
-	        fis.close();
-
-	        response.getOutputStream().write(buffer);
-	    }
-
-	    response.getOutputStream().flush();
+		if (img != null) {
+			response.setContentType("image/jpeg");
+			response.getOutputStream().write(img);
+		}
 	}
 
 	private void updateaccount(HttpServletRequest request, HttpServletResponse response) throws Exception {

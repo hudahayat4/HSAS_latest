@@ -47,6 +47,32 @@ public class StaffController extends HttpServlet {
 			case "list":
 				listStaffAccount(request, response);
 				break;
+			case "checkEmail":
+			    {
+			    String email = request.getParameter("email");
+			    boolean exists = StaffDAO.isEmailExists(email);
+			    response.setContentType("text/plain");
+			    response.getWriter().write(exists ? "exists" : "available");
+				break;
+			    }
+			case "checkPhone":{
+			    String phone = request.getParameter("phone");
+
+			    boolean exists = StaffDAO.isPhoneExists(phone);
+
+			    response.setContentType("text/plain");
+			    response.getWriter().write(exists ? "exists" : "available");
+			    break;
+			}
+			case "checkName":{
+			    String name = request.getParameter("name");
+
+			    boolean exists = StaffDAO.isNameExists(name);
+
+			    response.setContentType("text/plain");
+			    response.getWriter().write(exists ? "exists" : "available");
+			    break;
+			}
 			default:
 				response.sendRedirect("log_in.jsp");
 				break;
@@ -81,9 +107,9 @@ public class StaffController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		String action = request.getParameter("action");
-		
+
 		// --- LOGIK 1: UPDATE PROFILE ---
 		if ("updateProfile".equals(action)) {
 			try {
@@ -105,7 +131,7 @@ public class StaffController extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Update failed");
 				return;
 			}
-		}else if ("changePassword".equals(action)) {
+		} else if ("changePassword".equals(action)) {
 			try {
 				HttpSession session = request.getSession(false);
 				Integer staffID = (session != null) ? (Integer) session.getAttribute("staffID") : null;
@@ -179,20 +205,20 @@ public class StaffController extends HttpServlet {
 		if (filePart != null) {
 			inputStream = filePart.getInputStream();
 		}
-		
+
 		String hashedPassword = null;
-	    try {
-	        java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
-	        md.update(password.getBytes());
-	        byte[] byteData = md.digest();
-	        StringBuilder sb = new StringBuilder();
-	        for (byte b : byteData) {
-	            sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
-	        }
-	        hashedPassword = sb.toString();
-	    } catch (java.security.NoSuchAlgorithmException e) {
-	        e.printStackTrace();
-	    }
+		try {
+			java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+			md.update(password.getBytes());
+			byte[] byteData = md.digest();
+			StringBuilder sb = new StringBuilder();
+			for (byte b : byteData) {
+				sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+			}
+			hashedPassword = sb.toString();
+		} catch (java.security.NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 
 		Staff staff = new Staff();
 		staff.setName(name);

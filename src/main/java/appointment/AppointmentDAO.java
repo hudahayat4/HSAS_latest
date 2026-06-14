@@ -16,31 +16,6 @@ import util.ConnectionManager;
 public class AppointmentDAO {
 	private static Connection connection = null;
 
-	public static List<Package> getPackageAvailable() {
-		// TODO Auto-generated method stub
-		List<Package> packages = new ArrayList<>();
-
-		try {
-			String query = "SELECT * FROM JuzCare.package WHERE isExist = 'YES'";
-			connection = ConnectionManager.getConnection();
-			PreparedStatement ps = connection.prepareStatement(query);
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				Package p = new Package();
-				p.setPackageID(rs.getInt("packageID"));
-				p.setPackagePic(rs.getBinaryStream("packagePic"));
-				p.setPackageName(rs.getString("packageName"));
-				p.setPackagePrice(rs.getDouble("packagePrice"));
-				p.setIsExist(rs.getString("isExist"));
-				packages.add(p);
-			}
-			ps.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return packages;
-	}
 
 	public static byte[] getPackageImage(int id) throws SQLException {
 		// TODO Auto-generated method stub
@@ -237,4 +212,60 @@ public class AppointmentDAO {
 	    return map;
 	}
 
+	public static List<Package> getAllPackages() {
+
+	    List<Package> packages = new ArrayList<>();
+
+	    String query = "SELECT * FROM JuzCare.package";
+
+	    try (Connection connection = ConnectionManager.getConnection();
+	         PreparedStatement ps = connection.prepareStatement(query);
+	         ResultSet rs = ps.executeQuery()) {
+
+	        while (rs.next()) {
+
+	            Package p = new Package();
+
+	            p.setPackageID(rs.getInt("packageID"));
+	            p.setPackagePic(rs.getBinaryStream("packagePic"));
+	            p.setPackageName(rs.getString("packageName"));
+	            p.setPackagePrice(rs.getDouble("packagePrice"));
+	            p.setIsExist(rs.getString("isExist"));
+
+	            packages.add(p);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return packages;
+	}
+
+	public static List<String> getBookedTimes(String date)
+	        throws SQLException {
+
+	    List<String> times = new ArrayList<>();
+
+	    String sql =
+	        "SELECT TO_CHAR(apptTime, 'HH24:MI') AS bookedTime " +
+	        "FROM appointment " +
+	        "WHERE apptDate = ?";
+
+	    try (Connection conn = ConnectionManager.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+	        ps.setDate(1, java.sql.Date.valueOf(date));
+
+	        ResultSet rs = ps.executeQuery();
+
+	        while (rs.next()) {
+	            times.add(rs.getString("bookedTime"));
+	        }
+	    }
+	    System.out.println("Selected date = " + date);
+	    System.out.println("Booked times = " + times);
+
+	    return times;
+	}
 }

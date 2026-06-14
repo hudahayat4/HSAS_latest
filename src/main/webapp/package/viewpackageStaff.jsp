@@ -2,6 +2,8 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,7 +99,7 @@
 										width="80" height="60">
 
 									<div class="package-details">
-										<strong>${p.packageName}</strong><br> RM
+										<strong>${p.formattedPackageName}</strong><br> RM
 										<fmt:formatNumber value="${p.packagePrice}"
 											minFractionDigits="2" />
 									</div>
@@ -146,12 +148,16 @@
 							<!-- Name & Price -->
 							<div class="row">
 								<div class="col-md-6 mb-3 position-relative">
-									<label class="col-form-label">Name:</label> <input type="text"
-										class="form-control" id="packageName"
-										placeholder="Health Screening Type" name="packageName">
-									<span class="error-icon"><i
-										class="bi bi-exclamation-triangle-fill"></i></span>
-									<div class="error-message">Enter a package name.</div>
+									<label class="col-form-label">Name:</label><span class="ms-1"
+										data-bs-toggle="tooltip" data-bs-placement="right"
+										title="Name accept one word only"> <i
+										class="bi bi-question-circle text-muted"
+										style="cursor: pointer;"></i>
+									</span> <input type="text" class="form-control" id="packageName"
+										placeholder="Health Screening Type" pattern="^[A-Za-z0-9_]+$"
+										name="packageName"> <span class="error-icon"><i
+										class="bi bi-exclamation-triangle-fill"></i></span> <small
+										id="packageNameError" class="text-danger"></small>
 								</div>
 
 								<div class="col-md-6 mb-3 position-relative">
@@ -181,10 +187,10 @@
 										<!-- Fasting -->
 										<div class="col-md-6 mb-3 position-relative">
 											<label class="col-form-label">Fasting:</label><br> <input
-												class="form-check-input" type="radio" name="bfrReq"
-												value="YES"> Yes <input
+												id="bfrYes" class="form-check-input" type="radio"
+												name="bfrReq" value="YES"> YES <input id="bfrNo"
 												class="form-check-input ms-3" type="radio" name="bfrReq"
-												value="NO"> No <span class="error-icon"><i
+												value="NO"> NO<span class="error-icon"><i
 												class="bi bi-exclamation-triangle-fill"></i></span>
 											<div class="error-message">Select fasting option.</div>
 										</div>
@@ -192,10 +198,10 @@
 										<!-- Availability -->
 										<div class="col-md-6 mb-3 position-relative">
 											<label class="col-form-label">Availability:</label><br>
-											<input class="form-check-input" type="radio" name="isExist"
-												value="YES"> Yes <input
+											<input id="existYes" class="form-check-input" type="radio"
+												name="isExist" value="YES"> YES <input id="existNo"
 												class="form-check-input ms-3" type="radio" name="isExist"
-												value="NO"> No <span class="error-icon"><i
+												value="NO"> NO<span class="error-icon"><i
 												class="bi bi-exclamation-triangle-fill"></i></span>
 											<div class="error-message">Select availability option.</div>
 										</div>
@@ -209,8 +215,18 @@
 								<thead>
 									<tr>
 										<th style="width: 100px;">Action</th>
-										<th>Field Name</th>
-										<th>Value</th>
+										<th>Field Name <span class="ms-1"
+											data-bs-toggle="tooltip" data-bs-placement="right"
+											title="Field name accept one word only"> <i
+												class="bi bi-question-circle text-muted"
+												style="cursor: pointer;"></i>
+										</span></th>
+										<th>Datatype <span class="ms-1" data-bs-toggle="tooltip"
+											data-bs-placement="right"
+											title="Select datatype to set the type of input"> <i
+												class="bi bi-question-circle text-muted"
+												style="cursor: pointer;"></i>
+										</span></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -225,11 +241,18 @@
 
 										<!-- Field Name -->
 										<td><input type="text" class="form-control"
-											name="fieldName[]" placeholder="e.g. Blood Test"></td>
+											name="fieldName[]" placeholder="BloodTest"
+											pattern="^[A-Za-z0-9_]+$"> <small
+											class="fieldError text-danger"></small></td>
 
 										<!-- Value -->
-										<td><input type="text" class="form-control"
-											name="fieldValue[]" placeholder="e.g. Included"></td>
+										<td><select class="form-select" name="fieldValue[]">
+												<option value="" disabled selected hidden>Choose an
+													option...</option>
+												<option value="Number">Number</option>
+												<option value="Varchar2">Varchar2</option>
+												<option value="Long Text">Long Text</option>
+										</select></td>
 									</tr>
 								</tbody>
 							</table>
@@ -248,14 +271,22 @@
 					    let row = `
 					    <tr class="dynamic-row">
 					        <td>
-					            <button type="button" class="btn btn-success btn-lg" onclick="addRow()">+</button>
-					            <button type="button" class="btn btn-danger btn-lg" onclick="removeRow(this)">-</button>
+					            <button type="button" class="btn btn-success btn-sm" onclick="addRow()">+</button>
+					            <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button>
 					        </td>
 					        <td>
-					            <input type="text" class="form-control" name="fieldName[]" placeholder="e.g. Blood Test">
+					            <input type="text" class="form-control" name="fieldName[]" placeholder="e.g. BloodTest" 
+					                pattern="^[A-Za-z0-9_]+$">
+					            <small class="fieldError text-danger"></small>
 					        </td>
 					        <td>
-					            <input type="text" class="form-control" name="fieldValue[]" placeholder="e.g. Included">
+						        <select class="form-select" name="fieldValue[]">
+										<option value="" disabled selected hidden>Choose an
+											option...</option>
+										<option value="Number">Number</option>
+										<option value="Varchar2">Varchar2</option>
+										<option value="Long Text">Long Text</option>
+								</select>
 					        </td>
 					    </tr>
 					    `;
@@ -496,6 +527,58 @@
 	                existYes.parentElement.classList.remove('error-active');
 	            }
 	        });
+	    });
+	    
+	    const packageNameInput = document.getElementById("packageName");
+	    const packageNameError = document.getElementById("packageNameError");
+
+	    // Package Name Validation
+	    packageNameInput.addEventListener("input", function () {
+
+	        let value = this.value;
+
+	        if (value.includes(" ")) {
+	            packageNameError.textContent =
+	                "Cannot contain spaces.";
+	        } else {
+	            packageNameError.textContent = "";
+	        }
+	    });
+	    
+	    document.addEventListener("input", function (e) {
+
+	        if (e.target.name === "fieldName[]") {
+
+	            let input = e.target;
+	            let error = input.parentElement.querySelector(".fieldError");
+
+	            if (input.value.includes(" ")) {
+	                error.textContent =
+	                    "Cannot contain spaces.";
+	            } else {
+	                error.textContent = "";
+	            }
+	        }
+
+	    });
+
+	    packageNameInput.addEventListener("blur", function () {
+
+	        const packageName = this.value;
+
+	        if (packageName.length === 0) return;
+
+	        fetch("PackageController?action=checkPackageName&packageName="
+	                + encodeURIComponent(packageName))
+	            .then(res => res.text())
+	            .then(data => {
+	                if (data === "exists") {
+	                    packageNameError.textContent =
+	                        "Already exists in system.";
+	                } else {
+	                    packageNameError.textContent = "";
+	                }
+	            });
 	    });
 
 

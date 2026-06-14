@@ -35,8 +35,11 @@ body {
 		<div class="main">
 			<h2>Team Member's Personal</h2>
 			<h2>Information</h2>
-			<form action="StaffController" method="post"
+			<form action="StaffController" method="post" id="createStaff"
 				enctype="multipart/form-data">
+				<div id="alertBox"
+					class="alert d-none"
+					style="max-width: 400px;" role="alert"></div>
 				<input type="hidden" class="form-control" id="staffID"
 					name="staffID" value="<%=session.getAttribute("staffID")%>"
 					readonly>
@@ -67,8 +70,9 @@ body {
 				</div>
 				<div class="col-md-6">
 					<label for="exampleFormControlInput1" class="form-label">Phone</label>
-					<input type="text" class="form-control" id="PhoneNo" name="PhoneNo">
-					<small id="phoneError" class="text-danger"></small>
+					<input type="text" class="form-control" id="PhoneNo" name="PhoneNo"
+						inputmode="numeric" max="11"> <small id="phoneError"
+						class="text-danger"></small>
 				</div>
 				<div class="col-md-6">
 					<label for="exampleFormControlInput1" class="form-label">Email
@@ -133,8 +137,8 @@ body {
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary"
-									data-dismiss="modal">Cancel</button>
-								<button type="submit" class="btn btn-primary">Save</button>
+									data-bs-dismiss="modal">Cancel</button>
+								<button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
 							</div>
 						</div>
 					</div>
@@ -204,14 +208,18 @@ body {
 
 	        // ================= PHONE =================
 	        phoneInput.addEventListener("input", function () {
-	            this.value = this.value.replace(/[^0-9]/g, '');
+			    let rawValue = this.value;
+			
+			    if (/[^0-9]/.test(rawValue)) {
+			        phoneError.textContent = "Phone number must contain numbers only";
+			    } else {
+			        phoneError.textContent = "";
+			    }
+			
+			    this.value = rawValue.replace(/\D/g, '');
 
-	            if (this.value.length > 11) {
-	                this.value = this.value.slice(0, 11);
-	            }
-
-	            phoneError.textContent = "";
-	        });
+			    this.value = rawValue.replace(/\D/g, '').slice(0, 11);
+			});
 
 
 	        phoneInput.addEventListener("blur", function () {
@@ -248,6 +256,21 @@ body {
 	                });
 	        });
 
+	        nameInput.addEventListener("blur", function () {
+	            const name = this.value;
+
+	            if (name.length === 0) return;
+
+	            fetch("StaffController?action=checkName&name=" + encodeURIComponent(name))
+	                .then(res => res.text())
+	                .then(data => {
+	                    if (data === "exists") {
+	                        nameError.textContent = "Name already exists in system.";
+	                    } else {
+	                        nameError.textContent = "";
+	                    }
+	                });
+	        });
 
 	        // ================= PASSWORD TOGGLE =================
 	        function setupToggle(inputId, toggleId) {
@@ -279,6 +302,55 @@ body {
 	                nric.length >= 8 ? nric.slice(-8) : nric;
 	        });
 
+	    });
+	    
+	    const dobInput = document.getElementById("DOB");
+	    const icInput = document.getElementById("NRIC");
+
+	    dobInput.addEventListener("change", function () {
+	        let dob = new Date(this.value);
+
+	        if (!isNaN(dob)) {
+	            let year = String(dob.getFullYear()).slice(-2);
+	            let month = String(dob.getMonth() + 1).padStart(2, '0');
+	            let day = String(dob.getDate()).padStart(2, '0');
+
+	            let yymmdd = year + month + day;
+
+	            icInput.value = yymmdd; // auto fill first 6 digits
+	        } else {
+	            icInput.value = "";
+	        }
+	    });
+	    
+	    function showAlert(message, type) {
+	        const alertBox = document.getElementById("alertBox");
+
+	        alertBox.className = "alert"; // reset classes
+	        alertBox.classList.add("alert-" + type); // success, danger, warning, info
+	        alertBox.textContent = message;
+	        alertBox.classList.remove("d-none");
+
+	        // auto hide after 3 seconds
+	        setTimeout(() => {
+	            alertBox.classList.add("d-none");
+	        }, 3000);
+	    }
+	    
+	    document.getElementById("createStaff").addEventListener("submit", function (e) {
+
+	        const phoneError = document.getElementById("phoneError");
+	        const emailError = document.getElementById("emailError");
+	        const nameError = document.getElementById("nameError");
+
+	        if (phoneError.textContent !== "" ||
+	            emailError.textContent !== "" ||
+	            nameError.textContent !== "") {
+
+	            e.preventDefault();
+	            showAlert("Please fix all errors before submitting!", "danger");
+	            return;
+	        }
 	    });
 	    </script>
 

@@ -41,10 +41,19 @@ function updateUI() {
 
 
 function nextStep() {
-    if (currentStep < sections.length - 1) {
-        currentStep++;
-        updateUI();
-    }
+	if (currentStep === 0) {
+	        currentStep++;
+	        updateUI();
+	        return;
+	    }
+
+	if (currentStep === 1) {
+
+	        // submit form only here
+	        document.getElementById("appointmentForm").submit();
+
+	        return;
+    	}
 }
 
 function prevStep() {
@@ -60,12 +69,17 @@ updateUI();
 // -----------------------------
 // PACKAGE SELECTION
 // -----------------------------
-function selectPackage(element, packageId, packageName) {
-    document.querySelectorAll(".package-card").forEach(card => card.classList.remove("active"));
-    element.classList.add("active");
+function selectPackage(card, packageId, packageName) {
+
+    console.log("CLICKED:", packageId);
 
     document.getElementById("packageId").value = packageId;
     document.getElementById("confirmPackage").innerText = packageName;
+
+    document.querySelectorAll(".package-card")
+        .forEach(c => c.classList.remove("active"));
+
+    card.classList.add("active");
 }
 
 // -----------------------------
@@ -103,22 +117,47 @@ function renderCalendar() {
         } else {
             li.textContent = day;
             li.classList.add("month-day");
+			const selectedDay = new Date(year, month, day);
+			selectedDay.setHours(0,0,0,0);
+
+			if (selectedDay < today) {
+			    li.classList.add("disabled-date");
+			}
             if(day === today.getDate() && month === today.getMonth() && year === today.getFullYear()){
                 li.classList.add("current-day");
             }
 
             // Click event for selecting a date
-            li.addEventListener("click", function() {
-                document.querySelectorAll(".calendar-dates li").forEach(l => l.classList.remove("selected"));
-                this.classList.add("selected");
+			li.addEventListener("click", function() {
 
-                const m = String(month + 1).padStart(2, "0");
-                const d = String(day).padStart(2, "0");
-                selectedDate = `${year}-${m}-${d}`;
-                document.getElementById("apptDate").value = selectedDate;
-                updateConfirmText();
-                updateUI(); // enable submit if on step 2
-            });
+			    const selectedDay = new Date(year, month, day);
+			    selectedDay.setHours(0,0,0,0);
+
+			    if (selectedDay < today) {
+			        Swal.fire({
+			            icon: "error",
+			            title: "Invalid Date",
+			            text: "Past dates cannot be selected.",
+			            confirmButtonColor: "#17a2b8"
+			        });
+			        return;
+			    }
+
+			    document.querySelectorAll(".calendar-dates li")
+			        .forEach(l => l.classList.remove("selected"));
+
+			    this.classList.add("selected");
+
+			    const m = String(month + 1).padStart(2, "0");
+			    const d = String(day).padStart(2, "0");
+
+			    selectedDate = `${year}-${m}-${d}`;
+			    document.getElementById("apptDate").value = selectedDate;
+				selectDate(day, month, year);
+
+			    updateConfirmText();
+			    updateUI();
+			});
         }
 
         calendarDates.appendChild(li);
@@ -152,10 +191,52 @@ document.querySelectorAll(".time-slots li").forEach(slot => {
     });
 });
 
+
+
 // -----------------------------
 // UPDATE CONFIRMATION TEXT
 // -----------------------------
 function updateConfirmText() {
     document.getElementById("confirmDate").innerText =
         (selectedDate || "-") + " " + (selectedTime || "-");
+}
+
+
+// Inside your loop generating the calendar days:
+const dateToRender = new Date(currentYear, currentMonth, dayNumber);
+
+if (dateToRender < today) {
+    dateElement.classList.add("disabled-date");
+    dateElement.style.pointerEvents = "none"; // Non-clickable
+    dateElement.style.opacity = "0.4";
+} else {
+    dateElement.onclick = () => selectDate(dayNumber, currentMonth, currentYear);
+}
+
+function selectDate(day, month, year) {
+
+    const formattedDate =
+        `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+
+    fetch(`AppointmentController?action=checkAvailability&date=${formattedDate}`)
+        .then(res => res.json())
+        .then(bookedTimes => {
+
+            console.log("Booked Times:", bookedTimes);
+
+            document.querySelectorAll(".time-slots li").forEach(slot => {
+
+                slot.classList.remove("booked");
+                slot.classList.remove("selected");
+
+                const slotTime = slot.textContent.trim();
+
+                console.log("Checking:", slotTime);
+
+                if (bookedTimes.includes(slotTime)) {
+                    console.log("MATCH:", slotTime);
+                    slot.classList.add("booked");
+                }
+            });
+        });
 }

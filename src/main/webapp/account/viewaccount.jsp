@@ -100,16 +100,22 @@
 			<div class="profile-header">
 				<div class="user-info">
 					<div class="avatar-circle">
-						<img class="me-3"
-							src="${pageContext.request.contextPath}/AccountController?action=image&id=${customer.cusID}"
-							width="80" height="80"
-							style="border-radius: 50%; object-fit: cover;"
-							onerror="this.src='${pageContext.request.contextPath}/image/blank-profile-picture.png';">
+						<c:choose>
+							<c:when test="${not empty customer.custProfilePic}">
+								<img
+									src="${pageContext.request.contextPath}/CustomerController?action=image&id=${customer.cusID}"
+									alt="Profile Picture">
+							</c:when>
+
+							<c:otherwise>
+								<i class="fas fa-user"></i>
+							</c:otherwise>
+						</c:choose>
 					</div>
 
 					<div class="name-meta">
 						<h1>${customer.custName}</h1>
-						<p>${customer.custEmail }</p>
+						<p>${customer.custEmail}</p>
 					</div>
 				</div>
 

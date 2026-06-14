@@ -49,7 +49,7 @@ public class AppointmentController extends HttpServlet {
 		try {
 			switch (action) {
 			case "package":
-				listAvailablePackage(request, response);
+				listPackage(request, response);
 				break;
 			case "image":
 				showImage(request, response);
@@ -66,6 +66,9 @@ public class AppointmentController extends HttpServlet {
 			case "listStaff":
 				listAppointmentStaff(request, response);
 				break;
+			case "checkAvailability":
+				checkAvailability(request, response);
+				break;
 			default:
 				listAppointment(request, response);
 				break;
@@ -75,7 +78,30 @@ public class AppointmentController extends HttpServlet {
 		}
 	}
 
-	private void listAppointmentStaff(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void checkAvailability(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, SQLException {
+
+		String date = request.getParameter("date");
+
+		List<String> bookedTimes = AppointmentDAO.getBookedTimes(date);
+
+		response.setContentType("application/json");
+
+		StringBuilder json = new StringBuilder("[");
+		for (int i = 0; i < bookedTimes.size(); i++) {
+			json.append("\"").append(bookedTimes.get(i)).append("\"");
+
+			if (i < bookedTimes.size() - 1) {
+				json.append(",");
+			}
+		}
+		json.append("]");
+
+		response.getWriter().write(json.toString());
+	}
+
+	private void listAppointmentStaff(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		Integer staffID = (Integer) request.getSession().getAttribute("staffID");
 
@@ -141,14 +167,20 @@ public class AppointmentController extends HttpServlet {
 			throw new ServletException("Invalid customerID in session", e);
 		}
 		String packageIDStr = request.getParameter("packageId");
+
+		System.out.println("DEBUG packageId = [" + packageIDStr + "]");
+		System.out.println("DEBUG apptDate = [" + request.getParameter("apptDate") + "]");
+		System.out.println("DEBUG apptTime = [" + request.getParameter("apptTime") + "]");
+
 		if (packageIDStr == null || packageIDStr.isEmpty()) {
 			throw new ServletException("No package selected!");
 		}
+
 		int packageID;
 		try {
 			packageID = Integer.parseInt(packageIDStr);
 		} catch (NumberFormatException e) {
-			throw new ServletException("Invalid packageID format", e);
+			throw new ServletException("Invalid packageID format: " + packageIDStr, e);
 		}
 		String apptDateStr = request.getParameter("apptDate");
 		String apptTimeStr = request.getParameter("apptTime");
@@ -192,10 +224,9 @@ public class AppointmentController extends HttpServlet {
 		appt.setApptTime(apptTime);
 		appt.setCustomerEmail(custEmail);
 		AppointmentDAO.bookAppointment(appt);
-
-		// UNTUK TESTING SEND NOTIFICATION
-		// SendNotificationService service = new SendNotificationService();
-		// service.sendTwoDaysReminder("aqillghaz@gmail.com", "2026-01-19", "19:10");
+		System.out.println("packageId = [" + request.getParameter("packageId") + "]");
+		System.out.println("apptDate = [" + request.getParameter("apptDate") + "]");
+		System.out.println("apptTime = [" + request.getParameter("apptTime") + "]");
 
 		response.sendRedirect("AppointmentController?action=list");
 	}
@@ -227,10 +258,10 @@ public class AppointmentController extends HttpServlet {
 		}
 	}
 
-	private void listAvailablePackage(HttpServletRequest request, HttpServletResponse response)
+	private void listPackage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		List<Package> packages = AppointmentDAO.getPackageAvailable();
+		List<Package> packages = AppointmentDAO.getAllPackages();
 
 		if (packages == null) {
 			packages = new ArrayList<>();

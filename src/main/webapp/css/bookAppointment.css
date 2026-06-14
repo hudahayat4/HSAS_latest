@@ -78,12 +78,17 @@
 .package-card {
     position: relative;
     background: #fff;
-    border: 2px solid transparent;          /* grey border by default */
     border-radius: 16px;
-    padding: 24px 20px 32px;
+    padding: 24px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: 0.3s;
+    z-index: 2;
+}
+
+.disabled-card {
+    pointer-events: none;
+    opacity: 0.5;
 }
 
 /* Hover */
@@ -151,6 +156,18 @@
 ------------------- */
 .calendar-body {
 	padding: 10px 18px;
+}
+
+/* Current date */
+.calendar-dates li.current-day {
+	background: #e6f7fa;
+}
+
+/* If today's date is selected */
+.calendar-dates li.today.selected {
+    background: #17a2b8;
+    color: white;
+    border-color: #17a2b8;
 }
 
 .card {
@@ -311,6 +328,22 @@
     gap: 10px; /* Space between the slots */
 }
 
+/* Style for booked time slots */
+.time-slots li.booked {
+    cursor: not-allowed;
+    position: relative;
+}
+
+.time-slots li.booked::after {
+    content: "Full";
+    font-size: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: red;
+}
+
 /* Ensure list items don't have bottom margins that mess up the grid gap */
 .time-slots li {
     padding: 10px 5px;
@@ -322,6 +355,15 @@
     transition: all 0.2s ease;
     font-size: 0.9rem;
     font-weight: 500;
+}
+
+.time-slots li.booked {
+    background: #e9ecef !important;
+    color: #adb5bd !important;
+    text-decoration: line-through;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
 }
 
 /* Scrollbar styling */
@@ -369,3 +411,4 @@
     text-decoration: line-through;
     pointer-events: none; /* Prevents clicking */
 }
+

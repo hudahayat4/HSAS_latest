@@ -20,11 +20,13 @@
 
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/viewapt.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/footer.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/header.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/footer.css">
 
 <style type="text/css">
-<%@include file="../css/bookAppointment.css"%>
+<%@ include file="../css/bookAppointment.css"%>
 </style>
 </head>
 
@@ -55,29 +57,41 @@
 						<div class="step-circle">2</div>
 						<div class="step-label">Date</div>
 					</div>
-					<div class="step">
-						<div class="step-circle">3</div>
-						<div class="step-label">Confirm</div>
-					</div>
 				</div>
 			</div>
 
 			<!-- STEP 1 : PACKAGE -->
 			<div class="section active">
 				<div class="row justify-content-center mb-3">
+
 					<c:forEach var="p" items="${packages}">
-						<div class="col-md-3 package-card"
-							onclick="selectPackage(this,'${p.packageID}','${p.packageName}')">
-							<img
-								src="${pageContext.request.contextPath}/appointment/AppointmentController?action=image&id=${p.packageID}"
-								width="80" height="60">
-							<div>${p.packageName}</div>
-							<div class="package-price">RM ${p.packagePrice}</div>
-							<div class="check-icon">
-								<i class="bi bi-check-lg"></i>
-							</div>
+
+						<c:set var="isAvailable" value="${p.isExist == 'YES'}" />
+						<div class="col-md-3">
+						    <div class="package-card ${!isAvailable ? 'disabled-card' : ''}"
+						         onclick="selectPackage(this,'${p.packageID}','${p.packageName}')">
+						
+						        <img src="${pageContext.request.contextPath}/appointment/AppointmentController?action=image&id=${p.packageID}"
+						             width="80" height="60">
+						
+						        <div>${p.packageName}</div>
+						        <div class="package-price">RM ${p.packagePrice}</div>
+						
+						        <c:if test="${!isAvailable}">
+						            <div class="text-danger" style="font-size: 0.8rem;">
+						                Currently Unavailable
+						            </div>
+						        </c:if>
+						
+						        <div class="check-icon">
+						            <i class="bi bi-check-lg"></i>
+						        </div>
+						
+						    </div>
 						</div>
+
 					</c:forEach>
+
 				</div>
 			</div>
 
@@ -176,11 +190,12 @@
 			<div class="d-flex justify-content-center gap-3 mt-5 mb-5">
 				<button type="button" class="btn btn-secondary previous"
 					onclick="prevStep()">Back</button>
-				<button type="button" class="btn nexts" style="background: #17a2b8; color: white;" onclick="nextStep()">Next</button>
+				<button type="button" class="btn nexts"
+					style="background: #17a2b8; color: white;" onclick="nextStep()">Next</button>
 			</div>
 
 		</form>
-
+		
 		<!-- STEP 3 : CONFIRM -->
 		<div class="section">
 			<h5>Confirmation</h5>
@@ -194,8 +209,8 @@
 				<div class="appointment-meta">
 					<p class="section-title-small">DETAIL APPOINTMENT</p>
 					<div class="date-time-row">
-						<span id="confirmDate">📅 -</span> 
-						<span id="confirmDate">🕒 -</span>
+						<span id="confirmDate">📅 -</span> <span id="confirmTime">🕒
+							-</span>
 					</div>
 					<hr>
 				</div>

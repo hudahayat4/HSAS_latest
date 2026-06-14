@@ -29,4 +29,12 @@ public class Package {
 
     public String getIsExist() { return isExist; }
     public void setIsExist(String isExist) { this.isExist = isExist; }
+    
+    public String getFormattedPackageName() {
+        if (packageName == null) {
+            return "";
+        }
+
+        return packageName.replaceAll("([a-z])([A-Z])", "$1 $2");
+    }
 }

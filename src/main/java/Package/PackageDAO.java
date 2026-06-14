@@ -39,37 +39,37 @@ public class PackageDAO {
 			System.out.println(rows + " row(s) inserted successfully.");
 		}
 	}
+
 	public static byte[] getPackageImage(int id) throws SQLException {
-	    byte[] image = null;
+		byte[] image = null;
 
-	    String sql = "SELECT packagePic FROM package WHERE packageID=?";
-	    try (Connection conn = ConnectionManager.getConnection();
-	         PreparedStatement ps = conn.prepareStatement(sql)) {
+		String sql = "SELECT packagePic FROM package WHERE packageID=?";
+		try (Connection conn = ConnectionManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-	        ps.setInt(1, id);
-	        ResultSet rs = ps.executeQuery();
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
 
-	        if (rs.next()) {
-	            image = rs.getBytes("packagePic");
-	        }
-	    }
-	    return image;
+			if (rs.next()) {
+				image = rs.getBytes("packagePic");
+			}
+		}
+		return image;
 	}
 
-	//SELECT - get all bookings
+	// SELECT - get all bookings
 
-	public static List<Package> getAllPackage()  throws SQLException{
+	public static List<Package> getAllPackage() throws SQLException {
 		// TODO Auto-generated method stub
 		List<Package> packages = new ArrayList<>();
-		
-		try{
+
+		try {
 			String query = "SELECT * FROM package";
 			connection = ConnectionManager.getConnection();
 			PreparedStatement ps = connection.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				Package p= new Package();
+				Package p = new Package();
 				p.setPackageID(rs.getInt("packageID"));
 				p.setPackagePic(rs.getBinaryStream("packagePic"));
 				p.setPackageName(rs.getString("packageName"));
@@ -77,94 +77,92 @@ public class PackageDAO {
 				p.setBfrReq(rs.getString("bfrReq"));
 				p.setIsExist(rs.getString("isExist"));
 				packages.add(p);
-				
+
 			}
 			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return packages;
-		
+
 	}
 
-	
 	// READ - Get a package by ID
-		 public static Package getPackagebyId(int packageID) throws SQLException{
-			// TODO Auto-generated method stub
-			Package p = null;
-			try{
-				String query = "SELECT * FROM package WHERE packageID = ?";
-				connection = ConnectionManager.getConnection();
-				PreparedStatement ps = connection.prepareStatement(query);
-				ps.setInt(1, packageID);
-				ResultSet rs = ps.executeQuery();
+	public static Package getPackagebyId(int packageID) throws SQLException {
+		// TODO Auto-generated method stub
+		Package p = null;
+		try {
+			String query = "SELECT * FROM package WHERE packageID = ?";
+			connection = ConnectionManager.getConnection();
+			PreparedStatement ps = connection.prepareStatement(query);
+			ps.setInt(1, packageID);
+			ResultSet rs = ps.executeQuery();
 
-				while (rs.next()) {
-					p = new Package();
-					p.setPackageID(rs.getInt("packageID"));
-					p.setPackagePic(rs.getBinaryStream("packagePic"));
-					p.setPackageName(rs.getString("packageName"));
-					p.setPackagePrice(rs.getDouble("packagePrice"));
-					p.setBfrReq(rs.getString("bfrReq"));
-					p.setIsExist(rs.getString("isExist"));
-					
-					
-				}
-				rs.close();
-				ps.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			while (rs.next()) {
+				p = new Package();
+				p.setPackageID(rs.getInt("packageID"));
+				p.setPackagePic(rs.getBinaryStream("packagePic"));
+				p.setPackageName(rs.getString("packageName"));
+				p.setPackagePrice(rs.getDouble("packagePrice"));
+				p.setBfrReq(rs.getString("bfrReq"));
+				p.setIsExist(rs.getString("isExist"));
+
 			}
-			return p;
-		 }
-		 
-	 public static void updatePackage(Package p) throws SQLException, IOException {
-		 String sqlWithImage = "UPDATE package SET packageName=?, packagePic=?, packagePrice=?, bfrReq=?, isExist=? WHERE packageID=?";
-		    String sqlWithoutImage = "UPDATE package SET packageName=?, packagePrice=?, bfrReq=?, isExist=? WHERE packageID=?";
+			rs.close();
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return p;
+	}
 
-		    try (Connection connection = ConnectionManager.getConnection()) {
-		        PreparedStatement ps;
+	public static void updatePackage(Package p) throws SQLException, IOException {
+		String sqlWithImage = "UPDATE package SET packageName=?, packagePic=?, packagePrice=?, bfrReq=?, isExist=? WHERE packageID=?";
+		String sqlWithoutImage = "UPDATE package SET packageName=?, packagePrice=?, bfrReq=?, isExist=? WHERE packageID=?";
 
-		        if (p.getPackagePic() != null) { // user uploaded a new image
-		            ps = connection.prepareStatement(sqlWithImage);
-		            ps.setString(1, p.getPackageName());
-		            ps.setBinaryStream(2, p.getPackagePic(), p.getPackagePic().available());
-		            ps.setDouble(3, p.getPackagePrice());
-		            ps.setString(4, p.getBfrReq());
-		            ps.setString(5, p.getIsExist());
-		            ps.setInt(6, p.getPackageID());
-		        } else { // keep existing image
-		            ps = connection.prepareStatement(sqlWithoutImage);
-		            ps.setString(1, p.getPackageName());
-		            ps.setDouble(2, p.getPackagePrice());
-		            ps.setString(3, p.getBfrReq());
-		            ps.setString(4, p.getIsExist());
-		            ps.setInt(5, p.getPackageID());
-		        }
+		try (Connection connection = ConnectionManager.getConnection()) {
+			PreparedStatement ps;
 
-		        ps.executeUpdate();
-		        ps.close();
-	        }
-	    }
+			if (p.getPackagePic() != null) { // user uploaded a new image
+				ps = connection.prepareStatement(sqlWithImage);
+				ps.setString(1, p.getPackageName());
+				ps.setBinaryStream(2, p.getPackagePic(), p.getPackagePic().available());
+				ps.setDouble(3, p.getPackagePrice());
+				ps.setString(4, p.getBfrReq());
+				ps.setString(5, p.getIsExist());
+				ps.setInt(6, p.getPackageID());
+			} else { // keep existing image
+				ps = connection.prepareStatement(sqlWithoutImage);
+				ps.setString(1, p.getPackageName());
+				ps.setDouble(2, p.getPackagePrice());
+				ps.setString(3, p.getBfrReq());
+				ps.setString(4, p.getIsExist());
+				ps.setInt(5, p.getPackageID());
+			}
+
+			ps.executeUpdate();
+			ps.close();
+		}
+	}
 
 	public static List<Package> getAvailablePackage() {
 		// TODO Auto-generated method stub
-List<Package> packages = new ArrayList<>();
-		
-		try{
+		List<Package> packages = new ArrayList<>();
+
+		try {
 			String query = "SELECT * FROM package WHERE isExist='YES'";
 			connection = ConnectionManager.getConnection();
 			PreparedStatement ps = connection.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				Package p= new Package();
+				Package p = new Package();
 				p.setPackageID(rs.getInt("packageID"));
 				p.setPackagePic(rs.getBinaryStream("packagePic"));
 				p.setPackageName(rs.getString("packageName"));
 				p.setPackagePrice(rs.getDouble("packagePrice"));
 				packages.add(p);
-				
+
 			}
 			ps.close();
 		} catch (SQLException e) {
@@ -173,4 +171,101 @@ List<Package> packages = new ArrayList<>();
 		return packages;
 	}
 
-}	
+	public static void createPackageTable(String tableName, String[] fieldNames, String[] fieldTypes)
+			throws SQLException {
+
+		Connection con = ConnectionManager.getConnection();
+
+		StringBuilder sql = new StringBuilder();
+
+		sql.append("CREATE TABLE ").append(tableName).append(" (");
+
+		// Parent key
+		sql.append("resultID NUMBER(12)");
+
+		// Dynamic fields
+		for (int i = 0; i < fieldNames.length; i++) {
+
+		    if (fieldNames[i] == null || fieldNames[i].trim().isEmpty()) {
+		        continue;
+		    }
+
+		    String fieldName = fieldNames[i].trim()
+		                                  .replaceAll("\\s+", "_");
+
+		    String datatype;
+
+		    switch (fieldTypes[i]) {
+
+		        case "Number":
+		            datatype = "NUMBER";
+		            break;
+
+		        case "Varchar2":
+		            datatype = "VARCHAR2(255)";
+		            break;
+
+		        case "Long Text":
+		            datatype = "CLOB";
+		            break;
+
+		        default:
+		            datatype = "VARCHAR2(255)";
+		    }
+
+		    sql.append(", ")
+		       .append(fieldName)
+		       .append(" ")
+		       .append(datatype)
+		       .append(" CONSTRAINT ")
+		       .append(fieldName)
+		       .append("_NN NOT NULL");
+		}
+
+		// Constraint names
+		String pkName = "resultID" + tableName + "_PK";
+		String fkName = "resultID" + tableName + "_FK";
+
+		sql.append(", CONSTRAINT ").append(pkName).append(" PRIMARY KEY (resultID)");
+
+		sql.append(", CONSTRAINT ").append(fkName).append(" FOREIGN KEY (resultID)")
+				.append(" REFERENCES result(resultID)");
+
+		sql.append(")");
+
+		System.out.println(sql.toString());
+
+		PreparedStatement ps = con.prepareStatement(sql.toString());
+		ps.executeUpdate();
+
+		ps.close();
+		con.close();
+	}
+	
+	public static boolean packageExists(String packageName)
+	        throws SQLException {
+
+	    Connection con = ConnectionManager.getConnection();
+
+	    String sql =
+	        "SELECT COUNT(*) FROM PACKAGE WHERE UPPER(packageName)=UPPER(?)";
+
+	    PreparedStatement ps = con.prepareStatement(sql);
+	    ps.setString(1, packageName);
+
+	    ResultSet rs = ps.executeQuery();
+
+	    boolean exists = false;
+
+	    if (rs.next()) {
+	        exists = rs.getInt(1) > 0;
+	    }
+
+	    rs.close();
+	    ps.close();
+	    con.close();
+
+	    return exists;
+	}
+
+}

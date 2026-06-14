@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import staff.StaffDAO;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,6 +63,17 @@ public class PackageController extends HttpServlet {
 				return;
 			case "viewPackage":
 				listPackageManager(request,response);
+			case "checkPackageName": {
+
+			    String packageName = request.getParameter("packageName");
+
+			    boolean exists = PackageDAO.packageExists(packageName);
+
+			    response.setContentType("text/plain");
+			    response.getWriter().write(exists ? "exists" : "available");
+
+			    break;
+			}
 			default:
 				listPackage(request, response);
 				return;
@@ -183,6 +196,8 @@ public class PackageController extends HttpServlet {
 		Double packagePrice = Double.parseDouble(request.getParameter("packagePrice"));
 		String bfrReq = request.getParameter("bfrReq");
 		String isExist = request.getParameter("isExist");
+		String[] fieldNames = request.getParameterValues("fieldName[]");
+		String[] fieldTypes = request.getParameterValues("fieldValue[]");
 
 		Package packages = new Package();
 		packages.setPackageName(packageName);
@@ -191,7 +206,12 @@ public class PackageController extends HttpServlet {
 		packages.setBfrReq(bfrReq);
 		packages.setIsExist(isExist);
 
+
 		PackageDAO.addPackage(packages);
+
+		if(fieldNames != null && fieldTypes != null){
+		    PackageDAO.createPackageTable(packageName, fieldNames, fieldTypes);
+		}
 		HttpSession session = request.getSession();
 		session.setAttribute("message", "Package added successfully!");
 		response.sendRedirect("PackageController?action=list");
