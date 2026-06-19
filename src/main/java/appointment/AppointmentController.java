@@ -45,7 +45,7 @@ public class AppointmentController extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String action = request.getParameter("action");
-
+		// listStaff is for pharmacist, listSta is for staff
 		try {
 			switch (action) {
 			case "package":
@@ -66,6 +66,12 @@ public class AppointmentController extends HttpServlet {
 			case "listStaff":
 				listAppointmentStaff(request, response);
 				break;
+			case "listSta":
+				listAppointmentSta(request, response);
+				break;
+			case "listManager":
+				listAppointmentManager(request, response);
+				break;
 			case "checkAvailability":
 				checkAvailability(request, response);
 				break;
@@ -76,6 +82,38 @@ public class AppointmentController extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	
+	private void listAppointmentManager(HttpServletRequest request,
+	        HttpServletResponse response)
+	        throws ServletException, IOException {
+
+	    List<appointment> appointments =
+	            AppointmentDAO.getAllAppointments();
+
+	    System.out.println("Manager Appointment Count = "
+	            + appointments.size());
+
+	    request.setAttribute("appointments", appointments);
+
+	    request.getRequestDispatcher("/appointment/listaptManager.jsp")
+	            .forward(request, response);
+	}
+
+	private void listAppointmentSta(HttpServletRequest request,
+	        HttpServletResponse response)
+	        throws ServletException, IOException {
+
+	    List<appointment> appointments =
+	            AppointmentDAO.getAllAppointments();
+
+	    System.out.println("Appointment count = " + appointments.size());
+
+	    request.setAttribute("appointments", appointments);
+
+	    request.getRequestDispatcher("/appointment/listaptSta.jsp")
+	            .forward(request, response);
 	}
 
 	private void checkAvailability(HttpServletRequest request, HttpServletResponse response)

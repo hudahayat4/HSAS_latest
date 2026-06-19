@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>list appointment pharmacist</title>
 <link rel="stylesheet" href="../css/sideStaff.css">
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -77,5 +77,20 @@
 			</div>
 		</div>
 	</div>
+	
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<c:if test="${not empty errorMessage}">
+<script>
+Swal.fire({
+    icon: 'warning',
+    title: 'Result Not Available',
+    text: '${errorMessage}',
+    confirmButtonColor: '#009FA5'
+});
+</script>
+<c:remove var="errorMessage" scope="session"/>
+</c:if>
+	
 </body>
 </html>

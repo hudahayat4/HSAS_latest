@@ -36,7 +36,7 @@
        		 </a>
        	</li>
        	 <li class="sidebar-item">
-       		 <a href="javascript:void(0)" class="sidebar-link">
+       		 <a href="${pageContext.request.contextPath}/appointment/AppointmentController?action=listManager" class="sidebar-link">
        		 	<i class="lni lni-user-multiple-4"></i>
        		 	<span>Appointment</span>
        		 </a>
