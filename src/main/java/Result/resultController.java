@@ -155,34 +155,66 @@ public class resultController extends HttpServlet {
 		}
 	}
 	
-	private void viewResult(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String appointmentIdStr = request.getParameter("appointmentID");
+	private void viewResult(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
+
+	    String appointmentIdStr = request.getParameter("appointmentID");
 
 	    if (appointmentIdStr != null) {
-	        int appointmentID = 0;
+
+	        int appointmentID;
+
 	        try {
 	            appointmentID = Integer.parseInt(appointmentIdStr);
 	        } catch (NumberFormatException e) {
-	            response.sendRedirect("resultController?action=gincu");
+
+	            request.getSession().setAttribute(
+	                "errorMessage",
+	                "Result is not available yet."
+	            );
+
+	            response.sendRedirect(
+	                request.getContextPath()
+	                + "/appointment/AppointmentController?action=listStaff"
+	            );
 	            return;
 	        }
 
-	        // Call DAO
+	        // Check whether result exists
 	        Result result = ResultDAO.getResultByAppointmentId(appointmentID);
 
 	        if (result != null) {
-	            // Set Appointment object for JSP
+
 	            request.setAttribute("apt", result.getApt());
-	            // Also set full Result object
 	            request.setAttribute("result", result);
 
-	            request.getRequestDispatcher("/result/viewresultPharmacist.jsp").forward(request, response);
+	            request.getRequestDispatcher("/result/viewresultPharmacist.jsp")
+	                   .forward(request, response);
+
 	        } else {
-	            response.sendRedirect("resultController?action=list");
+
+	            request.getSession().setAttribute(
+	                "errorMessage",
+	                "Result is not available yet."
+	            );
+
+	            response.sendRedirect(
+	                request.getContextPath()
+	                + "/appointment/AppointmentController?action=listStaff"
+	            );
 	        }
 
 	    } else {
-	        response.sendRedirect("resultController?action=list");
+
+	        request.getSession().setAttribute(
+	            "errorMessage",
+	            "Result is not available yet."
+	        );
+
+	        response.sendRedirect(
+	            request.getContextPath()
+	            + "/appointment/AppointmentController?action=listStaff"
+	        );
 	    }
 	}
 	
