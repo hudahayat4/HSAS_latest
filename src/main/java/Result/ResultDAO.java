@@ -1,14 +1,19 @@
 package Result;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import Package.DynamicField;
+import Package.Package;
 import appointment.appointment;
+import jakarta.servlet.http.HttpServletRequest;
 import util.ConnectionManager;
 
 public class ResultDAO {
@@ -254,6 +259,139 @@ public class ResultDAO {
 	    }
 
 	    return result;
+	}
+
+	public static List<DynamicField> getPackageColumns(
+	        String packageName) {
+
+	    List<DynamicField> fields =
+	            new ArrayList<>();
+
+	    String tableName =
+	            packageName.replaceAll("\\s+", "");
+
+	    String sql =
+	            "SELECT * FROM " + tableName + " WHERE 1=0";
+
+	    try (
+	        Connection conn =
+	                ConnectionManager.getConnection();
+
+	        PreparedStatement ps =
+	                conn.prepareStatement(sql);
+
+	        ResultSet rs =
+	                ps.executeQuery()
+	    ) {
+
+	        ResultSetMetaData meta =
+	                rs.getMetaData();
+
+	        for(int i = 1;
+	            i <= meta.getColumnCount();
+	            i++) {
+
+	            String columnName =
+	                    meta.getColumnName(i);
+
+	            String columnType =
+	                    meta.getColumnTypeName(i);
+
+	            if(!columnName.equalsIgnoreCase("resultID")) {
+
+	                fields.add(
+	                    new DynamicField(
+	                        columnName,
+	                        columnType));
+	            }
+	        }
+
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return fields;
+	}
+
+
+
+	public static void savePackageResult(
+	        int resultID,
+	        String packageName,
+	        HttpServletRequest request) {
+
+
+	    String tableName = packageName.replaceAll("\\s+", "");
+
+	    try(Connection conn = ConnectionManager.getConnection()) {
+
+
+	        String fieldSQL =
+	            "SELECT fieldName FROM DynamicField WHERE tableName=?";
+
+
+	        PreparedStatement fieldPs =
+	            conn.prepareStatement(fieldSQL);
+
+	        fieldPs.setString(1, tableName);
+
+	        ResultSet rs = fieldPs.executeQuery();
+
+
+	        StringBuilder columns =
+	            new StringBuilder("resultID");
+
+	        StringBuilder placeholders =
+	            new StringBuilder("?");
+
+
+	        List<String> values = new ArrayList<>();
+
+
+	        while(rs.next()) {
+
+	            String columnName =
+	                rs.getString("fieldName");
+
+
+	            columns.append(",").append(columnName);
+	            placeholders.append(",?");
+
+
+	            values.add(
+	                request.getParameter(columnName)
+	            );
+	        }
+
+
+	        String sql =
+	            "INSERT INTO " + tableName +
+	            " (" + columns + ") VALUES (" +
+	            placeholders + ")";
+
+
+	        PreparedStatement ps =
+	            conn.prepareStatement(sql);
+
+
+	        ps.setInt(1, resultID);
+
+
+	        for(int i=0; i<values.size(); i++) {
+
+	            ps.setString(
+	                i + 2,
+	                values.get(i)
+	            );
+	        }
+
+
+	        ps.executeUpdate();
+
+
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 
 }
