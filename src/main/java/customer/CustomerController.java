@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import Package.PackageDAO;
 
 @WebServlet("/account/CustomerController")
-@MultipartConfig(maxFileSize = 10485760)
+@MultipartConfig(maxFileSize = 5242880)
 public class CustomerController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -101,7 +101,7 @@ public class CustomerController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    String action = request.getParameter("action");
 
-	    try { // TRY BESAR BERMULA SINI
+	    try { // TRY BESAR MULA SINI
 	        if ("createAccount".equals(action)) {
 	            createAccount(request, response);
 	        } 
@@ -123,7 +123,7 @@ public class CustomerController extends HttpServlet {
 	            Integer customerId = (Integer) session.getAttribute("cusID");
 
 	            if (customerId == null) {
-	                response.sendRedirect("login.jsp");
+	                response.sendRedirect("log_in.jsp");
 	                return;
 	            }
 
@@ -204,7 +204,7 @@ public class CustomerController extends HttpServlet {
 	    Part filePart = request.getPart("custProfilePic");
 	    InputStream inputStream = null;
 	    if (filePart != null && filePart.getSize() > 0) {
-	        // Semak saiz fail di server (10MB)
+	        // Semak saiz fail di server (5MB)
 	        if (filePart.getSize() > 10 * 1024 * 1024) {
 	            sendError(request, response, "File size too large. Maximum 10MB.");
 	            return;
@@ -240,6 +240,28 @@ public class CustomerController extends HttpServlet {
 
 	    // 6. SIMPAN KE DATABASE
 	    try {
+	    	// Check duplicate username
+	        if (CustomerDAO.isUsernameExist(cust.getCustUsername())) {
+	            request.setAttribute("usernameError", "Username already exists");
+	            request.getRequestDispatcher("register.jsp").forward(request, response);
+	            return;
+	        }
+
+	        // Check duplicate IC
+	        if (CustomerDAO.isICExist(cust.getCusNRIC())) {
+	            request.setAttribute("icError", "IC Number already exists");
+	            request.getRequestDispatcher("register.jsp").forward(request, response);
+	            return;
+	        }
+
+	        // Check duplicate Email
+	        if (CustomerDAO.isEmailExist(cust.getCustEmail())) {
+	            request.setAttribute("emailError", "Email already exists");
+	            request.getRequestDispatcher("register.jsp").forward(request, response);
+	            return;
+	        }
+	        
+	        //Kalau semua okay, simpan ke DB
 	        CustomerDAO.createAccount(cust);
 	        System.out.println("createAccount → Account created in DB: " + cust.getCustEmail());
 	        
@@ -258,7 +280,7 @@ public class CustomerController extends HttpServlet {
 	        throws ServletException, IOException {
 	    request.setAttribute("alertMessage", message);
 	    request.setAttribute("alertType", "danger");
-	    request.getRequestDispatcher("create_account.jsp").forward(request, response);
+	    request.getRequestDispatcher("register.jsp").forward(request, response);
 	}
 	
 //BAHAGIAN BAWAH NI SEMUA BERKAITAN DENGAN VERIFY ACCOUNT
