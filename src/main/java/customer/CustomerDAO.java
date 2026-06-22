@@ -12,15 +12,46 @@ import java.io.InputStream;
 public class CustomerDAO {
     private static Connection connection = null;
 
-    //Create Account
+  //Create Account
     public static void createAccount(Customer cust) throws SQLException, IOException {
-    	String query = "INSERT INTO CUSTOMER"
-    	        + "(cusNRIC, custName, custEmail, custProfilePic, DOB, custUsername, custPassword, custPhoneNo, custVerified) "
-    	        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
         connection = ConnectionManager.getConnection();
-        PreparedStatement ps = connection.prepareStatement(query);
 
+        // 1. Check IC
+        String checkIC = "SELECT COUNT(*) FROM CUSTOMER WHERE cusNRIC=?";
+        try (PreparedStatement psIC = connection.prepareStatement(checkIC)) {
+            psIC.setString(1, cust.getCusNRIC());
+            ResultSet rs = psIC.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                throw new SQLException("IC_EXISTS");
+            }
+        }
+
+        // 2. Check Email
+        String checkEmail = "SELECT COUNT(*) FROM CUSTOMER WHERE custEmail=?";
+        try (PreparedStatement psEmail = connection.prepareStatement(checkEmail)) {
+            psEmail.setString(1, cust.getCustEmail());
+            ResultSet rs = psEmail.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                throw new SQLException("EMAIL_EXISTS");
+            }
+        }
+
+        // 3. Check Username
+        String checkUsername = "SELECT COUNT(*) FROM CUSTOMER WHERE custUsername=?";
+        try (PreparedStatement psUser = connection.prepareStatement(checkUsername)) {
+            psUser.setString(1, cust.getCustUsername());
+            ResultSet rs = psUser.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                throw new SQLException("USERNAME_EXISTS");
+            }
+        }
+
+        // 4. Proceed with INSERT if all unique
+        String query = "INSERT INTO CUSTOMER "
+                + "(cusNRIC, custName, custEmail, custProfilePic, DOB, custUsername, custPassword, custPhoneNo, custVerified) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        PreparedStatement ps = connection.prepareStatement(query);
         ps.setString(1, cust.getCusNRIC());
         ps.setString(2, cust.getCustName());
         ps.setString(3, cust.getCustEmail());
@@ -37,9 +68,53 @@ public class CustomerDAO {
         ps.setString(7, cust.getCustPassword());
         ps.setString(8, cust.getCustPhoneNo());
         ps.setString(9, "NO");
+
         ps.executeUpdate();
         ps.close();
     }
+    
+ // Check Email exist
+    public static boolean isEmailExist(String email) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM CUSTOMER WHERE custEmail=?";
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
+    // Check Username exist
+    public static boolean isUsernameExist(String username) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM CUSTOMER WHERE custUsername=?";
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
+    // Check IC exist
+    public static boolean isICExist(String ic) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM CUSTOMER WHERE cusNRIC=?";
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, ic);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
     
   //Simpan Verify Code
     public static void saveVerificationCode(String email, String code, java.sql.Timestamp expiry) throws SQLException {

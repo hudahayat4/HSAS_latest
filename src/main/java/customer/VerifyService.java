@@ -58,13 +58,15 @@ public class VerifyService {
      */
     private void sendVerificationEmail(String to, String code) {
         final String fromEmail = "juz.care.26@gmail.com"; 
-        final String appPassword = "dwxx fxxd cqit icnq"; 
+        final String appPassword = "jixd mmiw qqmr cysv"; 
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true"); 
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+
 
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
