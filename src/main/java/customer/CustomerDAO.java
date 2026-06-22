@@ -12,9 +12,9 @@ import java.io.InputStream;
 public class CustomerDAO {
     private static Connection connection = null;
 
-  //Create Account
+    //Create Account
     public static void createAccount(Customer cust) throws SQLException, IOException {
-        connection = ConnectionManager.getConnection();
+    	connection = ConnectionManager.getConnection();
 
         // 1. Check IC
         String checkIC = "SELECT COUNT(*) FROM CUSTOMER WHERE cusNRIC=?";
@@ -45,13 +45,14 @@ public class CustomerDAO {
                 throw new SQLException("USERNAME_EXISTS");
             }
         }
+        
+    	String query = "INSERT INTO CUSTOMER"
+    	        + "(cusNRIC, custName, custEmail, custProfilePic, DOB, custUsername, custPassword, custPhoneNo, custVerified) "
+    	        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        // 4. Proceed with INSERT if all unique
-        String query = "INSERT INTO CUSTOMER "
-                + "(cusNRIC, custName, custEmail, custProfilePic, DOB, custUsername, custPassword, custPhoneNo, custVerified) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+        connection = ConnectionManager.getConnection();
         PreparedStatement ps = connection.prepareStatement(query);
+
         ps.setString(1, cust.getCusNRIC());
         ps.setString(2, cust.getCustName());
         ps.setString(3, cust.getCustEmail());
@@ -68,12 +69,10 @@ public class CustomerDAO {
         ps.setString(7, cust.getCustPassword());
         ps.setString(8, cust.getCustPhoneNo());
         ps.setString(9, "NO");
-
         ps.executeUpdate();
         ps.close();
     }
     
- // Check Email exist
     public static boolean isEmailExist(String email) throws SQLException {
         String sql = "SELECT COUNT(*) FROM CUSTOMER WHERE custEmail=?";
         try (Connection conn = ConnectionManager.getConnection();
@@ -114,7 +113,6 @@ public class CustomerDAO {
         }
         return false;
     }
-
     
   //Simpan Verify Code
     public static void saveVerificationCode(String email, String code, java.sql.Timestamp expiry) throws SQLException {
@@ -250,30 +248,28 @@ public class CustomerDAO {
 
     
     //update account 
- // Method to update customer profile
     public static void updateprofile(Customer c) throws SQLException {
-        // Ensure column names (custPhoneNo, custEmail, cusID) match your database table exactly
-        String sql = "UPDATE customer SET custPhoneNo = ?, custEmail = ? WHERE cusID = ?";
-        
+        boolean hasNewPic = (c.getCustProfilePic() != null);
+        String sql = hasNewPic
+            ? "UPDATE customer SET custName = ?, custPhoneNo = ?, custEmail = ?, cusNRIC = ?, custProfilePic = ? WHERE cusID = ?"
+            : "UPDATE customer SET custName = ?, custPhoneNo = ?, custEmail = ?, cusNRIC = ? WHERE cusID = ?";
+
         try (Connection con = ConnectionManager.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            
-            ps.setString(1, c.getCustPhoneNo());
-            ps.setString(2, c.getCustEmail());
-            ps.setInt(3, c.getCusID());
-            
-            int rowsUpdated = ps.executeUpdate();
-            
-            // Logical check for debugging
-            if (rowsUpdated > 0) {
-                System.out.println("DEBUG: Update SUCCESSFUL for ID: " + c.getCusID());
+
+            ps.setString(1, c.getCustName());
+            ps.setString(2, c.getCustPhoneNo());
+            ps.setString(3, c.getCustEmail());
+            ps.setString(4, c.getCusNRIC());
+
+            if (hasNewPic) {
+                ps.setBinaryStream(5, c.getCustProfilePic());
+                ps.setInt(6, c.getCusID());
             } else {
-                System.out.println("DEBUG: Update FAILED. No record found for ID: " + c.getCusID());
+                ps.setInt(5, c.getCusID());
             }
-            
-        } catch (SQLException e) {
-            System.err.println("DEBUG: Database Error - " + e.getMessage());
-            throw e;
+
+            ps.executeUpdate();
         }
     }
     
