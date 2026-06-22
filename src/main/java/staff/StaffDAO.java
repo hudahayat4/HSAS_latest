@@ -11,15 +11,13 @@ import util.ConnectionManager;
 import util.Password;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class StaffDAO {
-    private static Connection connection = null;
 
-    //Login Staff (JANGAN LUPA UBAH BALIK NANTI)
+    // Login Staff - Fixed to assign raw byte[] array
     public static Staff loginStaff(Staff staff) {
         Staff result = null;
-        String query = "SELECT staffID, NRIC, managerID, name, PhoneNo, DOB, email, role " +
+        String query = "SELECT staffID, NRIC, managerID, name, PhoneNo, DOB, email, role, profilePic " +
                        "FROM staff WHERE username=? AND password=?";
 
         try (Connection conn = ConnectionManager.getConnection();
@@ -39,7 +37,10 @@ public class StaffDAO {
                     result.setDOB(rs.getDate("DOB"));
                     result.setEmail(rs.getString("email"));
                     result.setRole(rs.getString("role"));
-                    result.setUsername(staff.getUsername()); // simpan username asal
+                    result.setUsername(staff.getUsername()); 
+                    
+                    // Fixed: Directly pass the byte array stream allocation
+                    result.setProfilePic(rs.getBytes("profilePic"));
                 }
             }
         } catch (SQLException e) {
@@ -48,189 +49,202 @@ public class StaffDAO {
         return result;
     }
 
-
+    // Create Account - Fixed to insert raw BLOB bytes smoothly
     public static void createStaffAccount(Staff staff) throws SQLException, IOException {
-        // --- 1️⃣ Generate raw password from NRIC ---
         String nric = staff.getNRIC();
         if (nric == null || nric.isEmpty()) {
             throw new IllegalArgumentException("NRIC cannot be null or empty");
         }
 
-        // --- 3️⃣ Insert staff into database ---
         String query = "INSERT INTO JuzCare.staff(NRIC, managerID, name, phoneNo, username, password, DOB, profilePic, email, role) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
-        connection = ConnectionManager.getConnection();
-        PreparedStatement ps = connection.prepareStatement(query);
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
-        ps.setString(1, staff.getNRIC());
-        ps.setInt(2, staff.getManagerID());
-        ps.setString(3, staff.getName());
-        ps.setString(4, staff.getPhoneNo());
-        ps.setString(5, staff.getUsername());
-        ps.setString(6, staff.getPassword());
-        ps.setDate(7, staff.getDOB());
+            ps.setString(1, staff.getNRIC());
+            ps.setInt(2, staff.getManagerID());
+            ps.setString(3, staff.getName());
+            ps.setString(4, staff.getPhoneNo());
+            ps.setString(5, staff.getUsername());
+            ps.setString(6, staff.getPassword());
+            ps.setDate(7, staff.getDOB());
 
-        InputStream profilePicStream = staff.getProfilePic();
-        if (profilePicStream != null) {
-            ps.setBinaryStream(8, profilePicStream, profilePicStream.available());
-        } else {
-            ps.setNull(8, java.sql.Types.BLOB);
+            // Fixed: Set raw byte sequence into the database mapping matrix
+            byte[] profilePicData = staff.getProfilePic();
+            if (profilePicData != null && profilePicData.length > 0) {
+                ps.setBytes(8, profilePicData);
+            } else {
+                ps.setNull(8, java.sql.Types.BLOB);
+            }
+
+            ps.setString(9, staff.getEmail());
+            ps.setString(10, staff.getRole());
+
+            ps.executeUpdate();
         }
-
-        ps.setString(9, staff.getEmail());
-        ps.setString(10, staff.getRole());
-
-        int rowsInserted = ps.executeUpdate();
-        System.out.println("Rows inserted: " + rowsInserted);
-
-        ps.close();
-        if (profilePicStream != null) profilePicStream.close();
     }
 
-	public static Staff getStaffById(int staffId) {
-		// TODO Auto-generated method stub
-		Staff s = null;
-		
-		String query = "SELECT * FROM staff WHERE staffID = ?";
-		try(Connection con = ConnectionManager.getConnection();
-			PreparedStatement ps = con.prepareStatement(query)){
-				ps.setInt(1, staffId);
-				try(ResultSet rs = ps.executeQuery()){
-					if(rs.next()) {
-						s = new Staff();
-						
-						s.setName(rs.getString("name"));
-						s.setEmail(rs.getString("email"));
-						s.setNRIC(rs.getString("NRIC"));
-						s.setUsername(rs.getString("username"));
-						s.setPassword(rs.getString("password"));
-						s.setDOB(rs.getDate("DOB"));
-						s.setPhoneNo(rs.getString("PhoneNo"));
-						s.setRole(rs.getString("role"));
-					}
-				}
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-			
-			return s;
-	}
+    // Get Single Staff Entity - Fixed to assign raw byte[] array
+    public static Staff getStaffById(int id) {
+        Staff staff = null;
+        String sql = "SELECT * FROM staff WHERE staffID = ?";
+        
+        try (Connection conn = ConnectionManager.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    staff = new Staff();
+                    staff.setStaffID(rs.getInt("staffID"));
+                    staff.setName(rs.getString("name"));
+                    staff.setEmail(rs.getString("email"));
+                    staff.setPhoneNo(rs.getString("phoneNo"));
+                    staff.setDOB(rs.getDate("DOB"));
+                    staff.setNRIC(rs.getString("NRIC"));
+                    staff.setRole(rs.getString("role"));
+                    
+                    // Fixed: Map BLOB directly to byte[] property arrays
+                    staff.setProfilePic(rs.getBytes("profilePic"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return staff;
+    }
 
-	public static void updateStaffProfile(Staff s) throws SQLException {
-	    // TUKAR: staffPhone -> phoneNo , staffEmail -> email
-	    String sql = "UPDATE staff SET phoneNo = ?, email = ? WHERE staffID = ?";
-	    
-	    try (Connection con = ConnectionManager.getConnection();
-	         PreparedStatement ps = con.prepareStatement(sql)) {
-	        
-	        ps.setString(1, s.getPhoneNo());
-	        ps.setString(2, s.getEmail());
-	        ps.setInt(3, s.getStaffID());
-	        
-	        int rowsUpdated = ps.executeUpdate();
-	        
-	        if (rowsUpdated > 0) {
-	            System.out.println("DEBUG: Staff Update SUCCESSFUL for ID: " + s.getStaffID());
-	        } else {
-	            System.out.println("DEBUG: Staff Update FAILED. No record found for ID: " + s.getStaffID());
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        throw e;
-	    }
-	}
-	
-	public static boolean updatePassword(int staffID, String newPassword) {
-	    String sql = "UPDATE staff SET password = ? WHERE staffID = ?";
-	    try (Connection con = ConnectionManager.getConnection();
-	         PreparedStatement ps = con.prepareStatement(sql)) {
-	        
-	        ps.setString(1, newPassword);
-	        ps.setInt(2, staffID);
-	        
-	        return ps.executeUpdate() > 0;
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false;
-	    }
-	}
-	
-	public static List<Staff> getAllStaff() {
-	    List<Staff> staffList = new ArrayList<>();
+    // NEW HELPER: Fetch ONLY image bytes for rendering actions on your JSPs
+    public static byte[] getProfilePicByID(int id) {
+        byte[] imageBytes = null;
+        String sql = "SELECT profilePic FROM staff WHERE staffID = ?";
+        
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    imageBytes = rs.getBytes("profilePic");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return imageBytes;
+    }
 
-	    try {
-	    	String query = "SELECT * FROM staff";
-	    	connection = ConnectionManager.getConnection();
-	         PreparedStatement ps = connection.prepareStatement(query);
-	         ResultSet rs = ps.executeQuery();
+    public static void updateStaffProfileFull(Staff s) throws SQLException {
+        // If a new profile picture is uploaded, update it. Otherwise, keep the old one.
+        boolean hasNewPic = (s.getProfilePic() != null && s.getProfilePic().length > 0);
+        String sql = hasNewPic 
+            ? "UPDATE staff SET name = ?, phoneNo = ?, email = ?, DOB = ?, NRIC = ?, profilePic = ? WHERE staffID = ?"
+            : "UPDATE staff SET name = ?, phoneNo = ?, email = ?, DOB = ?, NRIC = ? WHERE staffID = ?";
+        
+        try (Connection con = ConnectionManager.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setString(1, s.getName());
+            ps.setString(2, s.getPhoneNo());
+            ps.setString(3, s.getEmail());
+            ps.setDate(4, s.getDOB());
+            ps.setString(5, s.getNRIC());
+            
+            if (hasNewPic) {
+                ps.setBytes(6, s.getProfilePic());
+                ps.setInt(7, s.getStaffID());
+            } else {
+                ps.setInt(6, s.getStaffID());
+            }
+            
+            ps.executeUpdate();
+        }
+    }
+    
+    public static boolean verifyPassword(int staffID, String hashedPassword) {
+        String sql = "SELECT * FROM staff WHERE staffID = ? AND password = ?";
+        try (Connection con = ConnectionManager.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, staffID);
+            ps.setString(2, hashedPassword);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
+    public static boolean updatePassword(int staffID, String newPassword) {
+        String sql = "UPDATE staff SET password = ? WHERE staffID = ?";
+        try (Connection con = ConnectionManager.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setString(1, newPassword);
+            ps.setInt(2, staffID);
+            
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public static List<Staff> getAllStaff() {
+        List<Staff> staffList = new ArrayList<>();
+        String query = "SELECT * FROM staff";
 
-	        while (rs.next()) {
-	            Staff s = new Staff();
-	            s.setStaffID(rs.getInt("staffID"));
-	            s.setName(rs.getString("name"));
-	            s.setRole(rs.getString("role"));
-	            s.setEmail(rs.getString("email"));
-	            s.setPhoneNo(rs.getString("phoneNo"));
-	            // Tambah field lain jika perlu
-	            staffList.add(s);
-	        }
-	        ps.close();
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return staffList;
-	}
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
 
+            while (rs.next()) {
+                Staff s = new Staff();
+                s.setStaffID(rs.getInt("staffID"));
+                s.setName(rs.getString("name"));
+                s.setRole(rs.getString("role"));
+                s.setEmail(rs.getString("email"));
+                s.setPhoneNo(rs.getString("phoneNo"));
+                staffList.add(s);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return staffList;
+    }
 
-	 // ================= CHECK EMAIL =================
+    // ================= VALIDATION METHODS =================
     public static boolean isEmailExists(String email) throws Exception {
-
-        Connection conn = ConnectionManager.getConnection();
         String sql = "SELECT 1 FROM staff WHERE email = ?";
-
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, email);
-
-        ResultSet rs = ps.executeQuery();
-
-        boolean exists = rs.next();
-
-        conn.close();
-        return exists;
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
     }
 
-    // ================= CHECK PHONE =================
     public static boolean isPhoneExists(String phone) throws Exception {
-
-        Connection conn = ConnectionManager.getConnection();
         String sql = "SELECT 1 FROM staff WHERE phoneNo = ?";
-
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, phone);
-
-        ResultSet rs = ps.executeQuery();
-
-        boolean exists = rs.next();
-
-        conn.close();
-        return exists;
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
     }
 
-    // ================= CHECK NAME =================
     public static boolean isNameExists(String name) throws Exception {
-
-        Connection conn = ConnectionManager.getConnection();
         String sql = "SELECT 1 FROM staff WHERE name = ?";
-
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, name);
-
-        ResultSet rs = ps.executeQuery();
-
-        boolean exists = rs.next();
-
-        conn.close();
-        return exists;
-    }	
-	
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }   
 }

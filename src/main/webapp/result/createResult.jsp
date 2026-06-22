@@ -58,56 +58,45 @@
 								name="date" class="form-control rounded-pill"
 								value="${currentDateString}" readonly>
 						</div>
-						<c:choose>
+						<c:forEach var="field" items="${fields}">
 
-							<c:when test="${apt.packageName == 'Uric Acid'}">
-								<div class="mb-3">
-									<label class="form-label">Risk Indicator</label> <select
-										name="riskIndicator" class="form-select rounded-pill">
-										<option value="" selected disabled>Select Risk Level</option>
-										<option value="Low">Low</option>
-										<option value="Medium">Medium</option>
-										<option value="High">High</option>
-									</select>
-								</div>
+							<div class="mb-3">
 
-								<div class="mb-3">
-									<label class="form-label">Uric Level Range</label> <input
-										type="text" name="uricLevelRange"
-										class="form-control rounded-pill">
-								</div>
-							</c:when>
+								<label class="form-label">${field.fieldLabel} </label>
 
-							<c:when test="${apt.packageName == 'Lipid'}">
-								<div class="mb-3">
-									<label class="form-label">HDL Cholesterol</label> <input
-										type="number" name="hdl" class="form-control rounded-pill" step="any" min="0">
-								</div>
+								<c:choose>
 
-								<div class="mb-3">
-									<label class="form-label">Lipid Panel Details</label> <input
-										type="text" name="details" class="form-control rounded-pill">
-								</div>
-								<div class="mb-3">
-									<label class="form-label">LDL Cholesterol</label> <input
-										type="number" name="ldl" class="form-control rounded-pill"  step="any" min="0">
-								</div>
-							</c:when>
+									<c:when test="${field.fieldType == 'VARCHAR2'}">
+										<input type="text" name="${field.fieldName}"
+											class="form-control rounded-pill">
+									</c:when>
 
-							<c:when test="${apt.packageName == 'HBA1c'}">
-								<div class="mb-3">
-									<label class="form-label">Diabetes Risk Level</label> <input
-										type="text" name="diabetes"
-										class="form-control rounded-pill">
-								</div>
-								<div class="mb-3">
-									<label class="form-label">HBA1c Threshold</label> <input
-										type="number" name="threshold"
-										class="form-control rounded-pill" step="any" min="0">
-								</div>
-							</c:when>
+									<c:when test="${field.fieldType == 'CHAR'}">
+										<input type="text" name="${field.fieldName}"
+											class="form-control rounded-pill">
+									</c:when>
 
-						</c:choose>
+									<c:when
+										test="${field.fieldType == 'DOUBLE' || field.fieldType == 'DECIMAL'}">
+										<input type="number" step="any" name="${field.fieldName}"
+											class="form-control rounded-pill">
+									</c:when>
+
+									<c:when test="${field.fieldType == 'NUMBER'}">
+										<input type="number" name="${DynamicField.formatFieldName(field.fieldName)}"
+											class="form-control rounded-pill">
+									</c:when>
+
+									<c:otherwise>
+										<input type="text" name="${field.fieldName}"
+											class="form-control rounded-pill">
+									</c:otherwise>
+
+								</c:choose>
+
+							</div>
+
+						</c:forEach>
 						<div class="mb-3">
 							<label class="form-label">Comment :</label>
 							<textarea name="comment" class="form-control rounded-pill"
@@ -116,7 +105,9 @@
 					</div>
 				</div>
 				<div class="text-center mt-4">
-					<a href="${pageContext.request.contextPath}/appointment/AppointmentController?action=listStaff" class="btn px-4 me-3"
+					<a
+						href="${pageContext.request.contextPath}/appointment/AppointmentController?action=listStaff"
+						class="btn px-4 me-3"
 						style="background-color: #17a2b8; color: white;">Back</a>
 					<button type="submit" class="btn px-4"
 						style="border: 1px solid #17a2b8; color: #17a2b8; background-color: transparent;">Submit</button>

@@ -20,7 +20,7 @@
             <h2 class="h4 text-center mb-4">Create an Account</h2>
             <p class="mb-4 text-secondary text-center">
               Already have an account?
-              <a href="log_in.jsp" class="link-primary text-decoration-none">Log in</a>
+              <a href="<%= request.getContextPath() %>/log_in.jsp" class="link-primary text-decoration-none">Log in</a>
             </p>
 
             <!-- Register Form -->
@@ -35,10 +35,13 @@
                 </div>
 
                 <!-- Email -->
-                <div class="col-12">
-                  <label for="custEmail" class="form-label">Email</label>
-                  <input type="email" class="form-control" name="custEmail" id="custEmail" required>
-                </div>
+				<div class="col-12">
+				  <label for="custEmail" class="form-label">Email</label>
+				  <input type="email" class="form-control" name="custEmail" id="custEmail" required>
+				  <div id="emailError" class="text-danger small mt-1">
+				    <%= request.getAttribute("emailError") != null ? request.getAttribute("emailError") : "" %>
+				  </div>
+				</div>
 
                 <!-- Phone No -->
                 <div class="col-12">
@@ -54,22 +57,28 @@
 
                 <!-- IC Number -->
                 <div class="col-12">
-                  <label for="cusNRIC" class="form-label">IC Number</label>
-                  <input type="text" class="form-control" name="cusNRIC" id="cusNRIC" maxlength="12" placeholder="e.g. 990101105050" required>
-                </div>
+				  <label for="cusNRIC" class="form-label">IC Number</label>
+				  <input type="text" class="form-control" name="cusNRIC" id="cusNRIC" maxlength="12" required>
+				  <div id="icError" class="text-danger small mt-1">
+				    <%= request.getAttribute("icError") != null ? request.getAttribute("icError") : "" %>
+				  </div>
+				</div>
 
                 <!-- Username -->
-                <div class="col-12">
-                  <label for="custUsername" class="form-label">Username</label>
-                  <input type="text" class="form-control" name="custUsername" id="custUsername" required>
-                </div>
+				<div class="col-12">
+				  <label for="custUsername" class="form-label">Username</label>
+				  <input type="text" class="form-control" name="custUsername" id="custUsername" required>
+				  <div id="usernameError" class="text-danger small mt-1">
+				    <%= request.getAttribute("usernameError") != null ? request.getAttribute("usernameError") : "" %>
+				  </div>
+				</div>
 
                 <!-- Password -->
                 <div class="col-12">
                   <label for="custPassword" class="form-label">Password</label>
                   <div class="input-group">
                     <input type="password" class="form-control" name="custPassword" id="custPassword" 
-                    		pattern=".{8,}" title="Minimum 8 characters" required>
+                            pattern=".{8,}" title="Minimum 8 characters" required>
                     <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
                       <i class="bi bi-eye-slash-fill" id="eyeIcon"></i>
                     </span>
@@ -79,8 +88,8 @@
                 <!-- Upload Image -->
                 <div class="col-12">
                   <label for="custProfilePic" class="form-label">Upload Image</label>
-                  <input type="file" class="form-control" id="custProfilePic" name="custProfilePic" accept="image/*">
-                  <small class="text-muted">Max file size: 10MB</small>
+                  <input type="file" class="form-control" id="custProfilePic" name="custProfilePic" accept="image/*" required>
+                  <small class="text-muted">Max file size: 5MB</small>
                 </div>
 
                 <!-- Terms -->
@@ -113,6 +122,7 @@
     </div>
   </div>
 </section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../js/createAccount.js"></script>
 </body>
 </html>

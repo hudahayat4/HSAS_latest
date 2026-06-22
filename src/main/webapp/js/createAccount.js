@@ -4,25 +4,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const nameInput = document.getElementById('custName');
     const icInput = document.getElementById('cusNRIC');
     const phoneInput = document.getElementById('custPhoneNo');
+    const emailInput = document.getElementById('custEmail');
+    const usernameInput = document.getElementById('custUsername');
     const passwordInput = document.getElementById('custPassword');
     const togglePassword = document.getElementById('togglePassword');
     const eyeIcon = document.getElementById('eyeIcon');
     const fileInput = document.getElementById('custProfilePic');
     const agreeCheckbox = document.getElementById('iAgree');
 
+    // Error placeholders
+    const icErrorDiv = document.getElementById('icError');
+    const emailErrorDiv = document.getElementById('emailError');
+    const usernameErrorDiv = document.getElementById('usernameError');
+
     // 2. REAL-TIME INPUT RESTRICTIONS
-    
-    // Name: Allow only letters (A-Z, a-z) and spaces
     nameInput.addEventListener('input', function() {
         this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
     });
 
-    // IC Number: Allow only numbers (0-9)
     icInput.addEventListener('input', function() {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
-    // Phone Number: Allow only numbers and the '+' symbol
     phoneInput.addEventListener('input', function() {
         this.value = this.value.replace(/[^0-9+]/g, '');
     });
@@ -37,44 +40,71 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 4. FORM SUBMISSION VALIDATION
+    // 4. CLEAR ERROR ON FOCUS/INPUT
+    icInput.addEventListener("focus", () => icErrorDiv.textContent = "");
+    icInput.addEventListener("input", () => icErrorDiv.textContent = "");
+
+    emailInput.addEventListener("focus", () => emailErrorDiv.textContent = "");
+    emailInput.addEventListener("input", () => emailErrorDiv.textContent = "");
+
+    usernameInput.addEventListener("focus", () => usernameErrorDiv.textContent = "");
+    usernameInput.addEventListener("input", () => usernameErrorDiv.textContent = "");
+
+    // 5. FORM SUBMISSION VALIDATION
     form.addEventListener('submit', function(event) {
         let isValid = true;
-        let errorMessage = "";
+
+        // Reset inline error messages
+        icErrorDiv.textContent = "";
+        emailErrorDiv.textContent = "";
+        usernameErrorDiv.textContent = "";
 
         // Validate IC (Must be exactly 12 digits)
         const icValue = icInput.value.trim();
         if (icValue.length !== 12) {
-            errorMessage += "• IC Number must consist of exactly 12 digits.\n";
+            icErrorDiv.textContent = "IC Number must consist of exactly 12 digits.";
             isValid = false;
         }
 
-        // Validate Phone Number (Minimum 10 digits)
+        // Validate Phone Number (10-15 digits)
         const phoneValue = phoneInput.value.trim();
         if (phoneValue.length < 10 || phoneValue.length > 15) {
-            errorMessage += "• Please enter a valid phone number (10-15 digits).\n";
+            alert("Please enter a valid phone number (10-15 digits).");
             isValid = false;
         }
 
-        // Validate File Size (Max 10MB)
-        if (fileInput.files.length > 0) {
-            const fileSize = fileInput.files[0].size / 1024 / 1024; // Convert to MB
-            if (fileSize > 10) {
-                errorMessage += "• The uploaded image exceeds the 10MB size limit.\n";
-                isValid = false;
-            }
-        }
+		// Validate File Size (Max 5MB)
+		if (fileInput.files.length === 0) {
+		    Swal.fire({
+		        icon: 'error',
+		        title: 'Upload Error',
+		        text: 'Please upload an image.',
+		        confirmButtonText: 'OK'
+		    });
+		    isValid = false;
+		} else {
+		    const fileSize = fileInput.files[0].size / 1024 / 1024; // MB
+		    if (fileSize > 5) {
+		        Swal.fire({
+		            icon: 'error',
+		            title: 'Upload Error',
+		            text: 'The uploaded image exceeds the 5MB size limit.',
+		            confirmButtonText: 'OK'
+		        });
+		        isValid = false;
+		    }
+		}
+
 
         // Validate Terms and Conditions Checkbox
         if (!agreeCheckbox.checked) {
-            errorMessage += "• You must agree to the terms and conditions.\n";
+            alert("You must agree to the terms and conditions.");
             isValid = false;
         }
 
-        // If any validation fails, stop form submission
+        // Stop form submission if invalid
         if (!isValid) {
-            event.preventDefault(); 
-            alert("Please correct the following errors:\n\n" + errorMessage);
+            event.preventDefault();
         }
     });
 });

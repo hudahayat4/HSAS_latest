@@ -10,6 +10,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
+import Package.DynamicField;
 import appointment.appointment;
 
 /**
@@ -101,22 +102,40 @@ public class resultController extends HttpServlet {
 
 
 
-	private void viewForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String appointmentIdStr = request.getParameter("appointmentID");
+	private void viewForm(HttpServletRequest request,
+	        HttpServletResponse response)
+	        throws ServletException, IOException {
+
+	    String appointmentIdStr =
+	            request.getParameter("appointmentID");
 
 	    if (appointmentIdStr != null) {
-	        int appointmentID = 0;
-	        try {
-	            appointmentID = Integer.parseInt(appointmentIdStr);
-	            appointment apt = ResultDAO.getAppointment(appointmentID);
-	            // Set Appointment object for JSP
-	            request.setAttribute("apt", apt);
 
-	            request.getRequestDispatcher("/result/createResult.jsp").forward(request, response);
+	        try {
+
+	            int appointmentID =
+	                    Integer.parseInt(appointmentIdStr);
+
+	            appointment apt =
+	                    ResultDAO.getAppointment(appointmentID);
+
+	            List<DynamicField> fields =
+	                    ResultDAO.getPackageColumns(
+	                            apt.getPackageName());
+	            
+	            for (DynamicField field : fields) {
+	                field.setFieldLabel(DynamicField.formatFieldName(field.getFieldName()));
+	            }
+
+	            request.setAttribute("apt", apt);
+	            request.setAttribute("fields", fields);
+
+	            request.getRequestDispatcher(
+	                    "/result/createResult.jsp")
+	                    .forward(request, response);
+
 	        } catch (NumberFormatException e) {
-	            response.sendRedirect("${pageContext.request.contextPath}/appointment/appointmentController?action=listStaff");
-	            return;
+	            e.printStackTrace();
 	        }
 	    }
 	}
@@ -210,61 +229,44 @@ public class resultController extends HttpServlet {
 		
 	}
 
-	private void createResult(HttpServletRequest request, HttpServletResponse response) {
+	private void createResult(HttpServletRequest request,
+	        HttpServletResponse response) {
+
 	    try {
-	        // 1. Get appointment ID
-	        int appointmentID = Integer.parseInt(request.getParameter("appointmentID"));
 
-	        appointment apt = ResultDAO.getAppointment(appointmentID);
-	        String packageName = apt.getPackageName();
-	        // 2. Create parent Result
+	        int appointmentID =
+	                Integer.parseInt(request.getParameter("appointmentID"));
 
-	        Date date = Date.valueOf(request.getParameter("date"));
-	        String comment = request.getParameter("comment");
+	        appointment apt =
+	                ResultDAO.getAppointment(appointmentID);
+
+	        Date date =
+	                Date.valueOf(request.getParameter("date"));
+
+	        String comment =
+	                request.getParameter("comment");
 
 	        Result result = new Result();
 	        result.setAppointmentId(appointmentID);
 	        result.setResultDate(date);
 	        result.setResultComment(comment);
 
-	        // Save Result and get generated ID
-	        int generatedResultID = ResultDAO.addResult(result);
-	        if (generatedResultID == -1) {
-	            System.out.println("Failed to save result");
+	        int resultID = ResultDAO.addResult(result);
+
+	        if(resultID == -1) {
 	            return;
 	        }
 
-	        // 3. Save child based on package
-	        switch (packageName) {
-	            case "Uric Acid":
-	                UricAcid uric = new UricAcid();
-	                uric.setResultId(generatedResultID);
-	                uric.setRiskIndicator(request.getParameter("riskIndicator"));
-	                uric.setUricLevelRange(request.getParameter("uricLevelRange"));
-	                ResultDAO.addUricAcidResult(uric);
-	                break;
+	        ResultDAO.savePackageResult(
+	                resultID,
+	                apt.getPackageName(),
+	                request);
 
-	            case "HBA1c":
-	                HBA1C hba = new HBA1C();
-	                hba.setResultId(generatedResultID);
-	                hba.setDiabetesRiskLevel(request.getParameter("diabetes"));
-	                hba.setHBa1cTreShold(Double.parseDouble(request.getParameter("threshold")));
-	                ResultDAO.addHBA1cResult(hba);
-	                break;
+	        response.sendRedirect(
+	                request.getContextPath()
+	                + "/appointment/AppointmentController?action=listStaff");
 
-	            case "Lipid":
-	                Lipid lipid = new Lipid();
-	                lipid.setResultId(generatedResultID);
-	                lipid.setHdlCholesterol(Double.parseDouble(request.getParameter("hdl")));
-	                lipid.setLdlCholesterol(Double.parseDouble(request.getParameter("ldl")));
-	                lipid.setLipidPanelDetails(request.getParameter("details"));
-	                ResultDAO.addLipidResult(lipid);
-	                break;
-	        }
-
-	        response.sendRedirect(request.getContextPath() + "/appointment/AppointmentController?action=listStaff");
-
-	    } catch (Exception e) {
+	    } catch(Exception e) {
 	        e.printStackTrace();
 	    }
 	}
