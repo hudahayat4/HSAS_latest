@@ -265,7 +265,15 @@ public class StaffController extends HttpServlet {
 		// CREATE ACCOUNT LOGIC
 		try {
 		    createStaffAccount(request, response);
-		    response.sendRedirect(request.getContextPath() + "/teamaccount/StaffController?action=list");
+		    request.getSession().setAttribute(
+		    	    "successMessage",
+		    	    "Staff account successfully stored!"
+		    	);
+
+		    	response.sendRedirect(
+		    	    request.getContextPath() 
+		    	    + "/teamaccount/StaffController?action=list"
+		    	);
 		    return;
 		} catch (Exception e) {
 		    e.printStackTrace();
