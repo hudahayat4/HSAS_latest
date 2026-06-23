@@ -63,5 +63,13 @@ public class appointment {
 
         return apptTime.toLocalDateTime().isBefore(LocalDateTime.now());
     }
+    
+    public String getFormattedPackageName() {
+        if (packageName == null) {
+            return "";
+        }
+
+        return packageName.replaceAll("([a-z])([A-Z])", "$1 $2");
+    }
 
 }

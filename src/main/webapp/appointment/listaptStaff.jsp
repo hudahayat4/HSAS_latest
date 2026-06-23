@@ -93,4 +93,29 @@ Swal.fire({
 </c:if>
 	
 </body>
+<%
+String successMessage = (String) session.getAttribute("successMessage");
+
+if(successMessage != null){
+%>
+
+<script>
+window.onload = function() {
+
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: '<%= successMessage %>',
+        showConfirmButton: false,
+        timer: 2500
+    });
+
+}
+</script>
+
+<%
+session.removeAttribute("successMessage");
+}
+%>
 </html>

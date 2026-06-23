@@ -66,12 +66,12 @@ public class resultController extends HttpServlet {
 	private void viewMore(HttpServletRequest request, HttpServletResponse response) 
 	        throws ServletException, IOException {
 
-	    String appointmentIdStr = request.getParameter("appointmentID");
+		String resultID = request.getParameter("resultID");
 
-	    if (appointmentIdStr != null) {
+		if (resultID != null) {
 	        int appointmentID = 0;
 	        try {
-	            appointmentID = Integer.parseInt(appointmentIdStr);
+	            appointmentID = Integer.parseInt(resultID);
 	        } catch (NumberFormatException e) {
 	            response.sendRedirect("resultController?action=list");
 	            return;
@@ -261,6 +261,11 @@ public class resultController extends HttpServlet {
 	                resultID,
 	                apt.getPackageName(),
 	                request);
+	        
+	        request.getSession().setAttribute(
+		    	    "successMessage",
+		    	    "Result successfully saved!"
+		    	);
 
 	        response.sendRedirect(
 	                request.getContextPath()
