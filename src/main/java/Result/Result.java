@@ -1,6 +1,7 @@
 package Result;
 
 import java.sql.Date;
+import java.util.Map;
 
 import appointment.appointment;
 
@@ -19,6 +20,9 @@ public class Result implements Serializable {
 	private Lipid lipid;
 	private UricAcid uricacid;
 	private appointment apt;
+
+
+	private Map<String,String> packageValues;
 	
 	//default constructor 
 	public Result() {}
@@ -94,6 +98,15 @@ public class Result implements Serializable {
 
 	public void setApt(appointment apt) {
 		this.apt = apt;
+	}
+
+	public Map<String, String> getPackageValues() {
+	    return packageValues;
+	}
+
+	public void setPackageValues(
+	        Map<String, String> packageValues) {
+	    this.packageValues = packageValues;
 	}
 	
 }

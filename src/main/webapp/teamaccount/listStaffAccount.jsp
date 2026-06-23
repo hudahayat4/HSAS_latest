@@ -18,6 +18,7 @@
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/listTeamAccount.css?v=1.1">
 <link rel="stylesheet" href="../css/sideStaff.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 	<div class="wrapper">
@@ -27,6 +28,7 @@
 
 				<div class="header-row">
 					<h2>Team's Account</h2>
+					
 					<button class="add-btn"
 						onclick="location.href='createStaffAccount.jsp'">
 						<i class="fas fa-plus"></i> Add new team
@@ -68,4 +70,30 @@
 		</main>
 	</div>
 </body>
+
+<%
+String successMessage = (String) session.getAttribute("successMessage");
+
+if(successMessage != null){
+%>
+
+<script>
+window.onload = function() {
+
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: '<%= successMessage %>',
+        showConfirmButton: false,
+        timer: 2500
+    });
+
+}
+</script>
+
+<%
+session.removeAttribute("successMessage");
+}
+%>
 </html>

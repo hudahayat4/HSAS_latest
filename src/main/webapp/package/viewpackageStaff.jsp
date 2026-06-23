@@ -188,9 +188,9 @@
 										<div class="col-md-6 mb-3 position-relative">
 											<label class="col-form-label">Fasting:</label><br> <input
 												id="bfrYes" class="form-check-input" type="radio"
-												name="bfrReq" value="YES"> YES <input id="bfrNo"
+												name="bfrReq" value="YES"> Yes <input id="bfrNo"
 												class="form-check-input ms-3" type="radio" name="bfrReq"
-												value="NO"> NO<span class="error-icon"><i
+												value="NO"> No<span class="error-icon"><i
 												class="bi bi-exclamation-triangle-fill"></i></span>
 											<div class="error-message">Select fasting option.</div>
 										</div>
@@ -199,9 +199,9 @@
 										<div class="col-md-6 mb-3 position-relative">
 											<label class="col-form-label">Availability:</label><br>
 											<input id="existYes" class="form-check-input" type="radio"
-												name="isExist" value="YES"> YES <input id="existNo"
+												name="isExist" value="YES"> Yes <input id="existNo"
 												class="form-check-input ms-3" type="radio" name="isExist"
-												value="NO"> NO<span class="error-icon"><i
+												value="NO"> No<span class="error-icon"><i
 												class="bi bi-exclamation-triangle-fill"></i></span>
 											<div class="error-message">Select availability option.</div>
 										</div>

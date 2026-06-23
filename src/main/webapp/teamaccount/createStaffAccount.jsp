@@ -150,35 +150,6 @@ body {
 <script
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-	function setupToggle(inputId, toggleId) {
-	      const input = document.getElementById(inputId);
-	      const toggle = document.getElementById(toggleId);
-	      toggle.addEventListener('click', () => {
-	        const icon = toggle.querySelector('i');
-	        if (input.type === 'password') {
-	          input.type = 'text';
-	          icon.classList.remove('bi-eye-slash-fill');
-	          icon.classList.add('bi-eye-fill');
-	        } else {
-	          input.type = 'password';
-	          icon.classList.remove('bi-eye-fill');
-	          icon.classList.add('bi-eye-slash-fill');
-	        }
-	      });
-	    }
-	    setupToggle('password', 'toggleStaffPassword');
-	    
-	    var modal = document.getElementById('exampleModalToggle');
-
-	    modal.addEventListener('show.bs.modal', function () {
-	        var nric = document.getElementById('NRIC').value;
-	        if(nric.length >= 8){
-	            // Take last 8 digits of IC as password
-	            document.getElementById('password').value = nric.slice(-8);
-	        } else {
-	            document.getElementById('password').value = nric; // fallback
-	        }
-	    });
 	    
 	    document.addEventListener("DOMContentLoaded", function () {
 
@@ -348,7 +319,7 @@ body {
 	            nameError.textContent !== "") {
 
 	            e.preventDefault();
-	            showAlert("Please fix all errors before submitting!", "danger");
+	            showAlert("Please fill in the required field!", "danger");
 	            return;
 	        }
 	    });
