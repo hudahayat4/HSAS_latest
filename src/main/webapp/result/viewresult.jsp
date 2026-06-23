@@ -68,63 +68,21 @@
             </div>
 
             <div class="row g-3">
-                <c:choose>
-                    <c:when test="${apt.packageName == 'Uric Acid'}">
-                        <div class="col-md-6">
-                            <div class="result-tile">
-                                <div class="label-text">Risk Indicator</div>
-                                <span class="badge fs-6 mt-2 px-3 py-2
-                                    ${result.uricacid.riskIndicator == 'High' ? 'bg-danger' :
-                                      result.uricacid.riskIndicator == 'Medium' ? 'bg-warning text-dark' :
-                                      'bg-success'}">
-                                    ${result.uricacid.riskIndicator}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="result-tile">
-                                <div class="label-text">Uric Level</div>
-                                <div class="value-text mt-2">${result.uricacid.uricLevelRange}</div>
-                            </div>
-                        </div>
-                    </c:when>
+                <c:forEach var="entry" items="${result.packageValues}">
 
-                    <c:when test="${apt.packageName == 'Lipid'}">
-                        <div class="col-md-4">
-                            <div class="result-tile">
-                                <div class="label-text">HDL Cholesterol</div>
-                                <div class="value-text mt-1 text-success">${result.lipid.hdlCholesterol}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="result-tile">
-                                <div class="label-text">LDL Cholesterol</div>
-                                <div class="value-text mt-1 text-danger">${result.lipid.ldlCholesterol}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="result-tile">
-                                <div class="label-text">Details</div>
-                                <div class="value-text mt-1">${result.lipid.lipidPanelDetails}</div>
-                            </div>
-                        </div>
-                    </c:when>
+						<div class="col-md-6">
 
-                    <c:when test="${apt.packageName == 'HBA1c'}">
-                        <div class="col-md-6">
-                            <div class="result-tile">
-                                <div class="label-text">Diabetes Risk</div>
-                                <div class="value-text mt-1">${result.hba1c.diabetesRiskLevel}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="result-tile">
-                                <div class="label-text">HBA1c Threshold</div>
-                                <div class="value-text mt-1">${result.hba1c.HBa1cTreShold}</div>
-                            </div>
-                        </div>
-                    </c:when>
-                </c:choose>
+							<div class="result-tile">
+
+								<div class="label-text">${entry.key}</div>
+
+								<div class="value-text mt-2">${entry.value}</div>
+
+							</div>
+
+						</div>
+
+					</c:forEach>
             </div>
 
             <div class="mt-5">

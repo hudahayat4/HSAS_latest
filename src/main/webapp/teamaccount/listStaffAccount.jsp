@@ -18,6 +18,7 @@
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/listTeamAccount.css?v=1.1">
 <link rel="stylesheet" href="../css/sideStaff.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 	<div class="wrapper">
@@ -27,29 +28,38 @@
 
 				<div class="header-row">
 					<h2>Team's Account</h2>
+					
 					<button class="add-btn"
 						onclick="location.href='createStaffAccount.jsp'">
 						<i class="fas fa-plus"></i> Add new team
 					</button>
 				</div>
 
+
 				<c:forEach items="${staffList}" var="s">
 					<div class="team-card">
 						<div class="card-content">
 							<div class="member-info">
 								<div class="avatar-circle">
-									<i class="fas fa-user"></i>
+									<img class="me-3"
+										src="${pageContext.request.contextPath}/teamaccount/StaffController?action=image&id=${s.staffID}"
+										width="80" height="80"
+										style="border-radius: 50%; object-fit: cover;"
+										alt="Profile Picture"
+										onerror="this.src='${pageContext.request.contextPath}/image/blank-profile-picture.png';">
 								</div>
 								<div class="name-meta">
 									<span class="member-name">${s.name}</span> <span
 										class="member-role">${s.role}</span>
 								</div>
 							</div>
-							<a href="StaffController?action=view&id=${s.staffID}"
-								class="view-btn">View Details</a>
+							<a
+								href="${pageContext.request.contextPath}/teamaccount/StaffController?action=viewMember&staffID=${s.staffID}"
+								class="btn btn-outline-primary">View Details</a>
 						</div>
 					</div>
 				</c:forEach>
+
 
 				<c:if test="${empty staffList}">
 					<p style="text-align: center; margin-top: 20px;">No staff
@@ -60,4 +70,30 @@
 		</main>
 	</div>
 </body>
+
+<%
+String successMessage = (String) session.getAttribute("successMessage");
+
+if(successMessage != null){
+%>
+
+<script>
+window.onload = function() {
+
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: '<%= successMessage %>',
+        showConfirmButton: false,
+        timer: 2500
+    });
+
+}
+</script>
+
+<%
+session.removeAttribute("successMessage");
+}
+%>
 </html>

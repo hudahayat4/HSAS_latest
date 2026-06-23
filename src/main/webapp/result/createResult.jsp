@@ -44,7 +44,7 @@
 				</div>
 			</div>
 
-			<form action="resultController" method="post">
+			<form action="resultController" method="post" id="resultForm">
 				<div class="card">
 					<input type="hidden" name="appointmentID"
 						value="${apt.appointmentID}">
@@ -68,28 +68,34 @@
 
 									<c:when test="${field.fieldType == 'VARCHAR2'}">
 										<input type="text" name="${field.fieldName}"
-											class="form-control rounded-pill">
+											class="form-control rounded-pill" onkeyup="checkText(this)" required>
+										<small class="text-danger d-none error-msg"> Text only. Numbers and
+											symbols are not allowed. </small>
 									</c:when>
 
 									<c:when test="${field.fieldType == 'CHAR'}">
 										<input type="text" name="${field.fieldName}"
-											class="form-control rounded-pill">
+											class="form-control rounded-pill" required>
 									</c:when>
 
 									<c:when
 										test="${field.fieldType == 'DOUBLE' || field.fieldType == 'DECIMAL'}">
 										<input type="number" step="any" name="${field.fieldName}"
-											class="form-control rounded-pill">
+											class="form-control rounded-pill" required>
+										<small class="text-danger d-none error-msg"> Please enter number
+											(decimal allowed). </small>
 									</c:when>
 
 									<c:when test="${field.fieldType == 'NUMBER'}">
-										<input type="number" name="${DynamicField.formatFieldName(field.fieldName)}"
-											class="form-control rounded-pill">
+										<input type="number" name="${field.fieldName}"
+											class="form-control rounded-pill"
+											onkeyup="checkNumber(this)" required>
+										<small class="text-danger d-none error-msg"> Whole number only. </small>
 									</c:when>
 
 									<c:otherwise>
 										<input type="text" name="${field.fieldName}"
-											class="form-control rounded-pill">
+											class="form-control rounded-pill" required>
 									</c:otherwise>
 
 								</c:choose>
@@ -100,7 +106,7 @@
 						<div class="mb-3">
 							<label class="form-label">Comment :</label>
 							<textarea name="comment" class="form-control rounded-pill"
-								rows="3" cols="40" placeholder="ENTER"></textarea>
+								rows="3" cols="40" placeholder="ENTER" required></textarea>
 						</div>
 					</div>
 				</div>
@@ -116,4 +122,82 @@
 		</div>
 	</div>
 </body>
+<script>
+
+function checkText(input){
+
+    let error = 
+        input.parentElement.querySelector(".error-msg");
+
+
+    if(/[^a-zA-Z\s]/.test(input.value)){
+
+        error.style.display = "block";
+
+        input.classList.add("is-invalid");
+
+    } else {
+
+        error.style.display = "none";
+
+        input.classList.remove("is-invalid");
+    }
+
+}
+
+
+
+function checkNumber(input){
+
+    let error = 
+        input.parentElement.querySelector(".error-msg");
+
+
+    if(/\D/.test(input.value)){
+
+        error.style.display = "block";
+
+        input.classList.add("is-invalid");
+
+    } else {
+
+        error.style.display = "none";
+
+        input.classList.remove("is-invalid");
+    }
+
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("resultForm");
+
+    form.addEventListener("submit", function (event) {
+
+        let inputs = form.querySelectorAll("input[required], select[required], textarea[required]");
+        let isValid = true;
+
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.style.border = "1px solid red"; // highlight empty field
+            } else {
+                input.style.border = "";
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please fill in the required field',
+                confirmButtonColor: '#009FA5'
+            });
+        }
+    });
+
+});
+</script>
 </html>

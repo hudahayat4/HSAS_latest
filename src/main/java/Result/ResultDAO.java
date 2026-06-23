@@ -8,7 +8,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import Package.DynamicField;
 import Package.Package;
@@ -80,74 +82,6 @@ public class ResultDAO {
 	    }
 	    return -1;
 	}
-	
-	public static void addUricAcidResult(UricAcid uric) {
-	    // Note: We are inserting 'resultID' manually.
-	    // We assume 'resultID' is the PK and FK in this table.
-	    String sql = "INSERT INTO uricacid (resultID, uricLevelRange, riskIndicator) VALUES (?, ?, ?)";
-	    
-	    try (Connection con = ConnectionManager.getConnection();
-	         PreparedStatement ps = con.prepareStatement(sql)) {
-	        
-	        // 🔴 THIS IS THE LINK
-	        // We take the ID we set in the controller and push it to the DB
-	        ps.setInt(1, uric.getResultId()); 
-	        
-	        ps.setString(2, uric.getUricLevelRange());
-	        ps.setString(3, uric.getRiskIndicator());
-	        
-	        ps.executeUpdate();
-	        System.out.println("Uric Acid result added successfully for ID: " + uric.getResultId());
-	        
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	}
-
-	public static void addHBA1cResult(HBA1C hba) {
-	    // SQL: resultID is inserted manually (PK & FK)
-	    String sql = "INSERT INTO hba1c (resultID, diabetesRiskLevel, hBa1cThreshold) VALUES (?, ?, ?)";
-	    
-	    try (Connection con = ConnectionManager.getConnection();
-	         PreparedStatement ps = con.prepareStatement(sql)) {
-	        
-	        // 1. LINK: Set the ID (This ID comes from the parent Result table)
-	        ps.setInt(1, hba.getResultId()); 
-	        
-	        // 2. Set other fields
-	        ps.setString(2, hba.getDiabetesRiskLevel());
-	        ps.setDouble(3, hba.getHBa1cTreShold());
-	        
-	        ps.executeUpdate();
-	        System.out.println("HBA1c result added successfully for ID: " + hba.getResultId());
-	        
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	}
-
-	public static void addLipidResult(Lipid lipid) {
-	    // SQL: resultID is inserted manually (PK & FK)
-	    String sql = "INSERT INTO lipid (resultID, hdlCholesterol, ldlCholesterol, lipidPanelDetails) VALUES (?, ?, ?, ?)";
-	    
-	    try (Connection con = ConnectionManager.getConnection();
-	         PreparedStatement ps = con.prepareStatement(sql)) {
-	        
-	        // 1. LINK: Set the ID
-	        ps.setInt(1, lipid.getResultId());
-	        
-	        // 2. Set other fields
-	        ps.setDouble(2, lipid.getHdlCholesterol());
-	        ps.setDouble(3, lipid.getLdlCholesterol());
-	        ps.setString(4, lipid.getLipidPanelDetails());
-	        
-	        ps.executeUpdate();
-	        System.out.println("Lipid result added successfully for ID: " + lipid.getResultId());
-	        
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	}
 
 
 
@@ -178,87 +112,116 @@ public class ResultDAO {
 	}
 	
 	public static Result getResultByAppointmentId(int appointmentID) {
+
 	    Result result = null;
 
 	    String query =
 	        "SELECT " +
 	        "r.resultID, r.resultDate, r.resultComment, " +
-	        "a.appointmentID, a.apptDate, a.apptTime, s.name AS pharmacistName, " +
-	        "p.packageName, " +
-	        "u.UricLevelRange, u.riskIndicator, " +
-	        "l.hdlCholesterol, l.ldlCholesterol, l.lipidPanelDetails, " +
-	        "h.diabetesRiskLevel, h.hba1cThreshold " +
+	        "a.appointmentID, a.apptDate, a.apptTime, " +
+	        "s.name AS pharmacistName, " +
+	        "p.packageName " +
 	        "FROM result r " +
 	        "JOIN appointment a ON r.appointmentID = a.appointmentID " +
 	        "JOIN package p ON a.packageID = p.packageID " +
 	        "JOIN staff s ON a.staffID = s.staffID " +
-	        "LEFT JOIN UricAcid u ON r.resultID = u.resultID " +
-	        "LEFT JOIN lipid l ON r.resultID = l.resultID " +
-	        "LEFT JOIN HbA1c h ON r.resultID = h.resultID " +
 	        "WHERE r.appointmentID = ?";
 
-	    try (Connection conn = ConnectionManager.getConnection();
-	         PreparedStatement ps = conn.prepareStatement(query)) {
+	    try (
+	        Connection conn = ConnectionManager.getConnection();
+	        PreparedStatement ps = conn.prepareStatement(query)
+	    ) {
 
 	        ps.setInt(1, appointmentID);
 
-	        try (ResultSet rs = ps.executeQuery()) {
-	            if (rs.next()) {
+	        ResultSet rs = ps.executeQuery();
 
-	                result = new Result();
-	                result.setResultId(rs.getInt("resultID"));
-	                result.setAppointmentId(rs.getInt("appointmentID"));
-	                result.setResultDate(rs.getDate("resultDate"));
-	                result.setResultComment(rs.getString("resultComment"));
+	        if (rs.next()) {
 
-	                // ===== Create Appointment object =====
-	               appointment apt = new appointment();
-	                apt.setAppointmentID(rs.getInt("appointmentID"));
-	                apt.setApptDate(rs.getDate("apptDate"));
-	                apt.setApptTime(rs.getTimestamp("apptTime"));
-	                apt.setPharmacistName(rs.getString("pharmacistName")); // matches alias in query
-	                apt.setPackageName(rs.getString("packageName"));
-	                result.setApt(apt);
+	            result = new Result();
 
-	                // ===== Optional children =====
-	                if (rs.getObject("uricLevelRange") != null) {
-	                    UricAcid ua = new UricAcid();
-	                    ua.setResultId(result.getResultId());
-	                    ua.setResultDate(result.getResultDate());
-	                    ua.setResultComment(result.getResultComment());
-	                    ua.setUricLevelRange(rs.getString("UricLevelRange"));
-	                    ua.setRiskIndicator(rs.getString("riskIndicator"));
-	                    result.setUricacid(ua);
-	                }
+	            result.setResultId(rs.getInt("resultID"));
+	            result.setAppointmentId(rs.getInt("appointmentID"));
+	            result.setResultDate(rs.getDate("resultDate"));
+	            result.setResultComment(rs.getString("resultComment"));
 
-	                if (rs.getObject("hdlCholesterol") != null) {
-	                    Lipid lipid = new Lipid();
-	                    lipid.setResultId(result.getResultId());
-	                    lipid.setResultDate(result.getResultDate());
-	                    lipid.setResultComment(result.getResultComment());
-	                    lipid.setHdlCholesterol(rs.getDouble("hdlCholesterol"));
-	                    lipid.setLdlCholesterol(rs.getDouble("ldlCholesterol"));
-	                    lipid.setLipidPanelDetails(rs.getString("lipidPanelDetails"));
-	                    result.setLipid(lipid);
-	                }
+	            appointment apt = new appointment();
 
-	                if (rs.getObject("hba1cThreshold") != null) {
-	                    HBA1C hba1c = new HBA1C();
-	                    hba1c.setResultId(result.getResultId());
-	                    hba1c.setResultDate(result.getResultDate());
-	                    hba1c.setResultComment(result.getResultComment());
-	                    hba1c.setHBa1cTreShold(rs.getDouble("hba1cThreshold"));
-	                    hba1c.setDiabetesRiskLevel(rs.getString("diabetesRiskLevel"));
-	                    result.setHba1c(hba1c);
-	                }
-	            }
+	            apt.setAppointmentID(rs.getInt("appointmentID"));
+	            apt.setApptDate(rs.getDate("apptDate"));
+	            apt.setApptTime(rs.getTimestamp("apptTime"));
+	            apt.setPharmacistName(rs.getString("pharmacistName"));
+	            apt.setPackageName(rs.getString("packageName"));
+
+	            result.setApt(apt);
+
+	            Map<String, String> packageValues =
+	                    getPackageResultValues(
+	                            result.getResultId(),
+	                            apt.getPackageName());
+
+	            System.out.println("PACKAGE VALUES = " + packageValues);
+
+	            result.setPackageValues(packageValues);
+	            
 	        }
 
-	    } catch (SQLException e) {
+	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 
 	    return result;
+	}
+	
+	
+	public static Map<String, String> getPackageResultValues(
+	        int resultID,
+	        String packageName) {
+
+	    Map<String, String> values = new LinkedHashMap<>();
+
+	    String tableName = packageName.replaceAll("\\s+", "");
+
+	    String sql = "SELECT * FROM " + tableName + " WHERE RESULTID = ?";
+
+	    System.out.println("==============================");
+	    System.out.println("TABLE = " + tableName);
+	    System.out.println("RESULT ID = " + resultID);
+	    System.out.println("SQL = " + sql);
+
+	    try (
+	        Connection conn = ConnectionManager.getConnection();
+	        PreparedStatement ps = conn.prepareStatement(sql)
+	    ) {
+
+	        ps.setInt(1, resultID);
+
+	        ResultSet rs = ps.executeQuery();
+
+	        ResultSetMetaData meta = rs.getMetaData();
+
+	        if (rs.next()) {
+
+	            for (int i = 1; i <= meta.getColumnCount(); i++) {
+
+	                String columnName = meta.getColumnName(i);
+	                String value = rs.getString(i);
+
+	                values.put(columnName, value);
+	            }
+
+	        } else {
+	            System.out.println("NO DATA FOUND");
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+
+	    System.out.println("PACKAGE VALUES = " + values);
+
+	    return values;
 	}
 
 	public static List<DynamicField> getPackageColumns(
@@ -320,76 +283,67 @@ public class ResultDAO {
 	        String packageName,
 	        HttpServletRequest request) {
 
-
 	    String tableName = packageName.replaceAll("\\s+", "");
 
-	    try(Connection conn = ConnectionManager.getConnection()) {
+	    try (Connection conn = ConnectionManager.getConnection()) {
 
+	        String sqlMeta =
+	                "SELECT * FROM " + tableName + " WHERE 1=0";
 
-	        String fieldSQL =
-	            "SELECT fieldName FROM DynamicField WHERE tableName=?";
+	        PreparedStatement metaPs =
+	                conn.prepareStatement(sqlMeta);
 
+	        ResultSet rs =
+	                metaPs.executeQuery();
 
-	        PreparedStatement fieldPs =
-	            conn.prepareStatement(fieldSQL);
-
-	        fieldPs.setString(1, tableName);
-
-	        ResultSet rs = fieldPs.executeQuery();
-
+	        ResultSetMetaData meta =
+	                rs.getMetaData();
 
 	        StringBuilder columns =
-	            new StringBuilder("resultID");
+	                new StringBuilder("resultID");
 
 	        StringBuilder placeholders =
-	            new StringBuilder("?");
+	                new StringBuilder("?");
 
+	        List<String> values =
+	                new ArrayList<>();
 
-	        List<String> values = new ArrayList<>();
+	        for (int i = 1; i <= meta.getColumnCount(); i++) {
 
+	            String columnName = meta.getColumnName(i);
 
-	        while(rs.next()) {
-
-	            String columnName =
-	                rs.getString("fieldName");
-
+	            if (columnName.equalsIgnoreCase("RESULTID"))
+	                continue;
 
 	            columns.append(",").append(columnName);
 	            placeholders.append(",?");
 
+	            String value = request.getParameter(columnName);
 
-	            values.add(
-	                request.getParameter(columnName)
-	            );
+	            System.out.println("COLUMN = " + columnName);
+	            System.out.println("VALUE = " + value);
+
+	            values.add(value);
 	        }
 
-
 	        String sql =
-	            "INSERT INTO " + tableName +
-	            " (" + columns + ") VALUES (" +
-	            placeholders + ")";
-
+	                "INSERT INTO " + tableName +
+	                " (" + columns + ")" +
+	                " VALUES (" + placeholders + ")";
 
 	        PreparedStatement ps =
-	            conn.prepareStatement(sql);
-
+	                conn.prepareStatement(sql);
 
 	        ps.setInt(1, resultID);
 
-
-	        for(int i=0; i<values.size(); i++) {
-
-	            ps.setString(
-	                i + 2,
-	                values.get(i)
-	            );
+	        for (int i = 0; i < values.size(); i++) {
+	            ps.setString(i + 2, values.get(i));
 	        }
-
+	        
 
 	        ps.executeUpdate();
 
-
-	    } catch(Exception e) {
+	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}

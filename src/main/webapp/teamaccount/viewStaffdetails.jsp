@@ -39,17 +39,6 @@
 	max-width: 450px;
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
-.content-wrapper {
-    flex-grow: 1 !important;
-    padding: 40px !important;
-    display: flex !important;
-    justify-content: center !important; /* Center secara horizontal */
-    align-items: center !important;     /* TUKAR KEPADA CENTER: Membagi baki jarak atas & bawah secara seimbang */
-    background-color: #ffffff !important; 
-    min-width: 0 !important; 
-    min-height: 100vh !important;
-    box-sizing: border-box !important;
-}
 
 .password-container {
 	position: relative;
@@ -68,8 +57,6 @@
 	color: #666;
 	z-index: 10;
 }
-
-
 /* --- SWEETALERT CUSTOM DESIGN (Confirm Update Box) --- */
 .my-rounded-popup {
 	border-radius: 20px !important;
@@ -88,13 +75,14 @@
 }
 
 .my-cancel-btn {
-	background-color: #f1f1f1 !important;
-	color: #666 !important;
-	border: none !important;
-	padding: 12px 30px !important;
-	border-radius: 10px !important;
-	font-weight: 500 !important;
-	cursor: pointer;
+    background-color: #f1f1f1 !important;
+    color: #666 !important;
+    border: none !important;
+    padding: 12px 30px !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+}
 	
 /* This targets the sidebar images specifically to fix the layout overflow */
 /* It keeps your buttons and text exactly as they are */
@@ -133,7 +121,7 @@ nav img {
 							<c:choose>
 								<c:when test="${not empty staff.profilePic}">
 									<img class="me-3"
-										src="${pageContext.request.contextPath}/account/AccountController?action=image&id=${staff.staffID}"
+										src="${pageContext.request.contextPath}/teamaccount/StaffController?action=image&id=${staff.staffID}"
 										width="80" height="80"
 										style="border-radius: 50%; object-fit: cover;"
 										alt="Profile Picture"
@@ -153,12 +141,6 @@ nav img {
 							<p>${staff.email}</p>
 						</div>
 					</div>
-
-					<div class="action-buttons">
-						<a href="StaffController?action=edit" class="btn-edit-link">Edit</a>
-						<button type="button" class="link-password-btn"
-							onclick="toggleModal(true)">Change Password</button>
-					</div>
 				</div>
 
 				<div class="form-grid">
@@ -175,11 +157,6 @@ nav img {
 							value="${staff.email}" readonly class="locked-field">
 					</div>
 					
-					<div class="form-group">
-						<label>IC Number</label> <input type="text" id="NRIC" readonly
-							value="${staff.NRIC}" class="locked-field">
-					</div>
-					
 					<%-- Age Calculation Logic --%>
 					<jsp:useBean id="now" class="java.util.Date" />
 					<fmt:formatDate var="currentYear" value="${now}" pattern="yyyy" />
@@ -188,24 +165,25 @@ nav img {
 					<c:set var="calculatedAge" value="${currentYear - birthYear}" />
 					
 					<div class="form-group">
-						<label>Date of Birth</label> <input type="text" id="DOB"
-							value="<fmt:formatDate value="${staff.DOB}" pattern="dd/MM/yyyy" />"
-							readonly class="locked-field">
-					</div>
-					
-					<div class="form-group">
 						<label>Age</label> <input type="text"
 							value="${not empty staff.DOB ? calculatedAge : 'N/A'}" readonly
 							class="locked-field">
 					</div>
-					
-					
+					<div class="form-group">
+						<label>Date of Birth</label> <input type="text" id="DOB"
+							value="<fmt:formatDate value="${staff.DOB}" pattern="dd/MM/yyyy" />"
+							readonly class="locked-field">
+					</div>
+					<div class="form-group">
+						<label>IC Number</label> <input type="text" id="NRIC" readonly
+							value="${staff.NRIC}" class="locked-field">
+					</div>
 				</div>
 
 				<div class="d-flex justify-content-end mt-4">
-					<a href="${pageContext.request.contextPath}/dashboard/dashboardStaff.jsp" class="btn btn-outline-danger"
+					<a href="javascript:history.back()" class="btn btn-outline-danger"
 						style="border-radius: 10px; padding: 8px 30px; font-weight: bold; text-decoration: none;">
-						Back </a>
+						Back to List </a>
 				</div>
 			</div>
 		</main>
@@ -407,37 +385,6 @@ window.onclick = function(event) {
     if (event.target === modal) {
         toggleModal(false);
     }
-}
-
-//Cari kawasan function change password di dalam tag <script> anda, pastikan logiknya jadi seperti ini:
-// Gantikan fungsi ini di dalam fail VIEW PAGE anda (bukan fail edit di atas)
-function validatePasswordChange() {
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-
-    // 1. Semakan panjang minimum (bebas guna apa-apa kombinasi huruf kecil/besar/nombor)
-    if (newPassword.length < 6) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Password',
-            text: 'Password must be at least 6 characters long.',
-            confirmButtonColor: '#008080'
-        });
-        return false;
-    }
-
-    // 2. Semakan memastikan kedua-dua input adalah sama
-    if (newPassword !== confirmPassword) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Mismatch Password',
-            text: 'New Password and Confirm Password do not match.',
-            confirmButtonColor: '#008080'
-        });
-        return false;
-    }
-
-    return true;
 }
 </script>
 </body>
