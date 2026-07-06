@@ -579,16 +579,22 @@
 	});
 </script>
 	<c:if test="${not empty successMessage}">
-		<script>
+<script>
 Swal.fire({
     icon: 'success',
     title: 'Success',
-    text: '${successMessage}'
+    html: `
+        ${successMessage}<br><br>
+        <small>This pop-up will close automatically in <b>1 seconds</b>.</small>
+    `,
+    confirmButtonText: 'OK',
+    timer: 1000,
+    timerProgressBar: true,
+    allowOutsideClick: false
 });
 </script>
-		<c:remove var="successMessage" scope="session" />
-	</c:if>
-
+<c:remove var="successMessage" scope="session" />
+</c:if>
 	<c:if test="${not empty errorMessage}">
 		<script>
 Swal.fire({
