@@ -177,7 +177,7 @@ body {
 						<div class="form-group">
 							<label class="form-label fw-semibold text-secondary">IC
 								Number</label> <input type="text" name="NRIC" id="NRIC"
-								value="${staff.NRIC}" class="form-control" maxlength="12"
+								value="0${staff.NRIC}" class="form-control" maxlength="12"
 								placeholder="YYMMDDXXXXXX" required>
 							<div id="icError" class="error-message">
 								<i class="fas fa-exclamation-circle"></i> IC field must be
