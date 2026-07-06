@@ -65,8 +65,8 @@ body {
 
 				<div class="col-md-6">
 					<label for="exampleFormControlInput1" class="form-label">Full
-						name</label> <input type="text" class="form-control" id="name" name="name"
-						required> <small id="nameError" class="text-danger"></small>
+						name</label> <input type="text" class="form-control" id="name" name="name"> 
+						<small id="nameError" class="text-danger"></small>
 				</div>
 				<div class="col-md-6">
 					<label for="exampleFormControlInput1" class="form-label">Phone</label>
@@ -310,18 +310,28 @@ body {
 	    
 	    document.getElementById("createStaff").addEventListener("submit", function (e) {
 
-	        const phoneError = document.getElementById("phoneError");
-	        const emailError = document.getElementById("emailError");
-	        const nameError = document.getElementById("nameError");
+	        const name = document.getElementById("name").value.trim();
+	        const email = document.getElementById("email").value.trim();
+	        const phone = document.getElementById("PhoneNo").value.trim();
 
-	        if (phoneError.textContent !== "" ||
-	            emailError.textContent !== "" ||
-	            nameError.textContent !== "") {
+	        const nameError = document.getElementById("nameError").textContent.trim();
+	        const emailError = document.getElementById("emailError").textContent.trim();
+	        const phoneError = document.getElementById("phoneError").textContent.trim();
 
+	        // Required fields
+	        if (name === "" || email === "" || phone === "") {
 	            e.preventDefault();
 	            showAlert("Please fill in the required field!", "danger");
 	            return;
 	        }
+
+	        // Validation errors exist
+	        if (nameError !== "" || emailError !== "" || phoneError !== "") {
+	            e.preventDefault();
+	            return;
+	        }
+
+	        // No errors -> form submits normally
 	    });
 	    </script>
 

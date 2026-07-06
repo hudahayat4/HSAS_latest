@@ -44,7 +44,7 @@
 		  	<li class="sidebar-item">
        		 <a href="${pageContext.request.contextPath}/teamaccount/StaffController?action=list" class="sidebar-link">
        		 	<i class="lni lni-hierarchy-1"></i>
-       		 	<span>Team</span>
+       		 	<span>Staff</span>
        		 </a>
        	</li>
     <li class="sidebar-item">

@@ -46,13 +46,25 @@
 
 			<form action="resultController" method="post" id="resultForm">
 				<div class="card">
+				<div id="alertBox"
+				     class="d-none text-center fw-semibold shadow-sm"
+				     style="
+				        max-width: 450px;
+				        margin: 10px auto;
+				        padding: 10px 14px;
+				        border-radius: 8px;
+				        font-size: 14px;
+				        transition: all 0.2s ease;
+				        color: #dc3545;
+				     ">
+				</div>
 					<input type="hidden" name="appointmentID"
 						value="${apt.appointmentID}">
 					<div class="card-body">
 						<jsp:useBean id="now" class="java.util.Date" />
 						<fmt:formatDate var="currentDateString" value="${now}"
 							pattern="yyyy-MM-dd" />
-
+					
 						<div class="mb-3">
 							<label class="form-label">Date : </label> <input type="date"
 								name="date" class="form-control rounded-pill"
@@ -68,20 +80,20 @@
 
 									<c:when test="${field.fieldType == 'VARCHAR2'}">
 										<input type="text" name="${field.fieldName}"
-											class="form-control rounded-pill" onkeyup="checkText(this)" required>
+											class="form-control rounded-pill" onkeyup="checkText(this)">
 										<small class="text-danger d-none error-msg"> Text only. Numbers and
 											symbols are not allowed. </small>
 									</c:when>
 
 									<c:when test="${field.fieldType == 'CHAR'}">
 										<input type="text" name="${field.fieldName}"
-											class="form-control rounded-pill" required>
+											class="form-control rounded-pill">
 									</c:when>
 
 									<c:when
 										test="${field.fieldType == 'DOUBLE' || field.fieldType == 'DECIMAL'}">
 										<input type="number" step="any" name="${field.fieldName}"
-											class="form-control rounded-pill" required>
+											class="form-control rounded-pill">
 										<small class="text-danger d-none error-msg"> Please enter number
 											(decimal allowed). </small>
 									</c:when>
@@ -89,7 +101,7 @@
 									<c:when test="${field.fieldType == 'NUMBER'}">
 										<input type="number" name="${field.fieldName}"
 											class="form-control rounded-pill"
-											onkeyup="checkNumber(this)" required>
+											onkeyup="checkNumber(this)">
 										<small class="text-danger d-none error-msg"> Whole number only. </small>
 									</c:when>
 
@@ -106,7 +118,7 @@
 						<div class="mb-3">
 							<label class="form-label">Comment :</label>
 							<textarea name="comment" class="form-control rounded-pill"
-								rows="3" cols="40" placeholder="ENTER" required></textarea>
+								rows="3" cols="40" placeholder="ENTER"></textarea>
 						</div>
 					</div>
 				</div>
@@ -171,31 +183,44 @@ function checkNumber(input){
 document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.getElementById("resultForm");
+    const alertBox = document.getElementById("alertBox");
 
     form.addEventListener("submit", function (event) {
 
-        let inputs = form.querySelectorAll("input[required], select[required], textarea[required]");
-        let isValid = true;
+        event.preventDefault();
+
+        const inputs = form.querySelectorAll(
+            "input[type='text'], input[type='number'], textarea"
+        );
+
+        let emptyCount = 0;
+
+        // reset UI
+        alertBox.classList.add("d-none");
+        alertBox.textContent = "";
 
         inputs.forEach(input => {
-            if (!input.value.trim()) {
-                isValid = false;
-                input.style.border = "1px solid red"; // highlight empty field
+            if (input.readOnly) return;
+
+            if (input.value.trim() === "") {
+                emptyCount++;
+                input.classList.add("is-invalid");
             } else {
-                input.style.border = "";
+                input.classList.remove("is-invalid");
             }
         });
 
-        if (!isValid) {
-            event.preventDefault();
+        // ❗ CASE 1: ALL EMPTY
+        if (emptyCount === inputs.length) {
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Missing Information',
-                text: 'Please fill in the required field',
-                confirmButtonColor: '#009FA5'
-            });
+            alertBox.classList.remove("d-none");
+            alertBox.classList.add("alert-danger");
+            alertBox.textContent = "Filled in the required field";
+
+            return; // stop submit
         }
+        // ✅ ALL VALID → SUBMIT
+        form.submit();
     });
 
 });
