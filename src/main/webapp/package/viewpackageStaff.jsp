@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -326,26 +326,26 @@
 
 							<input type="hidden" name="action" value="update"> <input
 								type="hidden" name="packageID" id="u_packageID">
-<div class="mb-3">
-    <label class="form-label">Package Name</label>
-    <input type="text" class="form-control"
-           id="u_packageName" name="packageName">
-    <small id="uNameError" class="text-danger"></small>
-</div>
+							<div class="mb-3">
+								<label class="form-label">Package Name</label> <input
+									type="text" class="form-control" id="u_packageName"
+									name="packageName"> <small id="uNameError"
+									class="text-danger"></small>
+							</div>
 
-<div class="mb-3">
-    <label class="form-label">Package Price</label>
-    <input type="number" class="form-control"
-           id="u_packagePrice" name="packagePrice">
-    <small id="uPriceError" class="text-danger"></small>
-</div>
+							<div class="mb-3">
+								<label class="form-label">Package Price</label> <input
+									type="number" class="form-control" id="u_packagePrice"
+									name="packagePrice"> <small id="uPriceError"
+									class="text-danger"></small>
+							</div>
 
-<div class="mb-3">
-    <label class="form-label">Package Image</label>
-    <input type="file" class="form-control"
-           id="u_packagePic" name="packagePic">
-    <small id="uImageError" class="text-danger"></small>
-</div>
+							<div class="mb-3">
+								<label class="form-label">Package Image</label> <input
+									type="file" class="form-control" id="u_packagePic"
+									name="packagePic"> <small id="uImageError"
+									class="text-danger"></small>
+							</div>
 							<div class="mb-3">
 								<label class="form-label">Fasting Required</label><br> <input
 									type="radio" name="bfrReq" value="YES" id="u_bfr_yes">
@@ -392,7 +392,6 @@
 
 	    // ---------------- Update Modal ----------------
 	    const updateModalEl = document.getElementById('updateModal');
-	    const updateModal = bootstrap.Modal.getOrCreateInstance(updateModalEl);
 
 	    updateModalEl.addEventListener('show.bs.modal', function (event) {
 	        const button = event.relatedTarget;
@@ -408,10 +407,9 @@
 	        document.getElementById('u_exist_no').checked  = button.dataset.exist === 'NO';
 	    });
 
-	    // ---------------- Update Confirmation ----------------
+	    // ---------------- UPDATE VALIDATION ----------------
 	    const confirmButton = document.getElementById("confirmUpd");
 	    const updateForm = document.querySelector("#updateModal form");
-	    const contextPath = "${pageContext.request.contextPath}";
 
 	    confirmButton.addEventListener("click", function () {
 
@@ -421,32 +419,21 @@
 	        const packagePrice = document.getElementById("u_packagePrice");
 	        const fileInput = document.getElementById("u_packagePic");
 
-	        // Clear previous errors
 	        document.getElementById("uNameError").textContent = "";
 	        document.getElementById("uPriceError").textContent = "";
 	        document.getElementById("uImageError").textContent = "";
 
-	        // Package Name
 	        if (packageName.value.trim() === "") {
-	            document.getElementById("uNameError").textContent =
-	                "Package name cannot be empty.";
+	            document.getElementById("uNameError").textContent = "Package name cannot be empty.";
 	            isValid = false;
 	        }
 
-	        // Package Price
-	        if (packagePrice.value === "") {
-	            document.getElementById("uPriceError").textContent =
-	                "Package price is required.";
-	            isValid = false;
-	        } else if (parseFloat(packagePrice.value) <= 0) {
-	            document.getElementById("uPriceError").textContent =
-	                "Package price must be greater than RM0.";
+	        if (packagePrice.value === "" || parseFloat(packagePrice.value) <= 0) {
+	            document.getElementById("uPriceError").textContent = "Package price must be greater than RM0.";
 	            isValid = false;
 	        }
 
-	        // Image Validation
 	        if (fileInput.files.length > 0) {
-
 	            const file = fileInput.files[0];
 	            const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
@@ -463,12 +450,8 @@
 	            }
 	        }
 
-	        // Stop update if invalid
-	        if (!isValid) {
-	            return;
-	        }
+	        if (!isValid) return;
 
-	        // Only confirmation popup
 	        Swal.fire({
 	            title: "Are you sure?",
 	            text: "Do you want to update this package?",
@@ -484,12 +467,10 @@
 	        });
 
 	    });
-	    
-	    // ---------------- Add Modal Validation ----------------
-	 // Get the form
+
+	    // ---------------- ADD VALIDATION ----------------
 	    const form = document.getElementById('addPackageForm');
 
-	    // --- Fields ---
 	    const packageName = document.getElementById('packageName');
 	    const packagePrice = document.getElementById('packagePrice');
 	    const packagePic = document.getElementById('packagePic');
@@ -498,16 +479,51 @@
 	    const existYes = document.getElementById('existYes');
 	    const existNo = document.getElementById('existNo');
 
-	    // --- Submit Validation ---
-	    form.addEventListener('submit', function(event) {
+	    let isNameDuplicate = false;
+
+	    // ---------------- NAME CHECK (AJAX) ----------------
+	    const packageNameInput = document.getElementById("packageName");
+	    const packageNameError = document.getElementById("packageNameError");
+
+	    packageNameInput.addEventListener("blur", function () {
+
+	        const value = this.value;
+
+	        if (value.length === 0) return;
+
+	        fetch("PackageController?action=checkPackageName&packageName="
+	            + encodeURIComponent(value))
+	            .then(res => res.text())
+	            .then(data => {
+	                if (data === "exists") {
+	                    packageNameError.textContent = "Already exists in system.";
+	                    isNameDuplicate = true;
+	                } else {
+	                    packageNameError.textContent = "";
+	                    isNameDuplicate = false;
+	                }
+	            });
+	    });
+
+	    // ---------------- SUBMIT VALIDATION ----------------
+	    form.addEventListener('submit', function (event) {
+	        event.preventDefault();
+
 	        let isValid = true;
 
-	        // Package Name
+	        // Name
 	        if (!packageName.value.trim()) {
 	            packageName.parentElement.classList.add('error-active');
 	            isValid = false;
 	        } else {
 	            packageName.parentElement.classList.remove('error-active');
+	        }
+
+	        // Duplicate name check
+	        if (isNameDuplicate) {
+	            packageNameError.textContent = "Already exists in system.";
+	            packageName.parentElement.classList.add('error-active');
+	            isValid = false;
 	        }
 
 	        // Price
@@ -526,7 +542,7 @@
 	            packagePic.parentElement.classList.remove('error-active');
 	        }
 
-	        // Fasting Radio
+	        // Fasting
 	        if (!bfrYes.checked && !bfrNo.checked) {
 	            bfrYes.parentElement.classList.add('error-active');
 	            isValid = false;
@@ -534,7 +550,7 @@
 	            bfrYes.parentElement.classList.remove('error-active');
 	        }
 
-	        // Exist Radio
+	        // Availability
 	        if (!existYes.checked && !existNo.checked) {
 	            existYes.parentElement.classList.add('error-active');
 	            isValid = false;
@@ -542,124 +558,52 @@
 	            existYes.parentElement.classList.remove('error-active');
 	        }
 
-	        // Prevent submission if invalid
-	        if (!isValid) {
-	            event.preventDefault();
-	            event.stopPropagation();
-	        }
+	        if (!isValid) return;
+
+	        form.submit();
 	    });
 
-	    // --- Live Remove Error on Input ---
-	    packageName.addEventListener('input', function() {
-	        if (packageName.value.trim() !== '') {
-	            packageName.parentElement.classList.remove('error-active');
-	        }
+	    // ---------------- LIVE ERROR REMOVE ----------------
+	    packageName.addEventListener('input', () => {
+	        packageName.parentElement.classList.remove('error-active');
 	    });
 
-	    packagePrice.addEventListener('input', function() {
-	        if (packagePrice.value && packagePrice.value > 0) {
-	            packagePrice.parentElement.classList.remove('error-active');
-	        }
+	    packagePrice.addEventListener('input', () => {
+	        packagePrice.parentElement.classList.remove('error-active');
 	    });
 
-	    packagePic.addEventListener('change', function() {
-	        if (packagePic.value) {
-	            packagePic.parentElement.classList.remove('error-active');
-	        }
+	    packagePic.addEventListener('change', () => {
+	        packagePic.parentElement.classList.remove('error-active');
 	    });
-
-	    [bfrYes, bfrNo].forEach(radio => {
-	        radio.addEventListener('change', function() {
-	            if (bfrYes.checked || bfrNo.checked) {
-	                bfrYes.parentElement.classList.remove('error-active');
-	            }
-	        });
-	    });
-
-	    [existYes, existNo].forEach(radio => {
-	        radio.addEventListener('change', function() {
-	            if (existYes.checked || existNo.checked) {
-	                existYes.parentElement.classList.remove('error-active');
-	            }
-	        });
-	    });
-	    
-	    const packageNameInput = document.getElementById("packageName");
-	    const packageNameError = document.getElementById("packageNameError");
-
-	    // Package Name Validation
-	    packageNameInput.addEventListener("input", function () {
-
-	        let value = this.value;
-
-	        if (value.includes(" ")) {
-	            packageNameError.textContent =
-	                "Cannot contain spaces.";
-	        } else {
-	            packageNameError.textContent = "";
-	        }
-	    });
-	    
-	    document.addEventListener("input", function (e) {
-
-	        if (e.target.name === "fieldName[]") {
-
-	            let input = e.target;
-	            let error = input.parentElement.querySelector(".fieldError");
-
-	            if (input.value.includes(" ")) {
-	                error.textContent =
-	                    "Cannot contain spaces.";
-	            } else {
-	                error.textContent = "";
-	            }
-	        }
-
-	    });
-
-	    packageNameInput.addEventListener("blur", function () {
-
-	        const packageName = this.value;
-
-	        if (packageName.length === 0) return;
-
-	        fetch("PackageController?action=checkPackageName&packageName="
-	                + encodeURIComponent(packageName))
-	            .then(res => res.text())
-	            .then(data => {
-	                if (data === "exists") {
-	                    packageNameError.textContent =
-	                        "Already exists in system.";
-	                } else {
-	                    packageNameError.textContent = "";
-	                }
-	            });
-	    });
-
 
 	});
-
 </script>
-<c:if test="${not empty successMessage}">
+	<c:if test="${not empty successMessage}">
 <script>
 Swal.fire({
     icon: 'success',
     title: 'Success',
-    text: '${successMessage}'
+    html: `
+        ${successMessage}<br><br>
+        <small>This pop-up will close automatically in <b>1 seconds</b>.</small>
+    `,
+    confirmButtonText: 'OK',
+    timer: 1000,
+    timerProgressBar: true,
+    allowOutsideClick: false
 });
 </script>
-<c:remove var="successMessage" scope="session"/>
+<c:remove var="successMessage" scope="session" />
 </c:if>
-
-<c:if test="${not empty errorMessage}">
-<script>
+	<c:if test="${not empty errorMessage}">
+		<script>
 Swal.fire({
     icon: 'error',
     title: 'Error',
     text: '${errorMessage}'
 });
 </script>
-<c:remove var="errorMessage" scope="session"/>
-</c:if>
+		<c:remove var="errorMessage" scope="session" />
+	</c:if>
 </body>
 </html>
