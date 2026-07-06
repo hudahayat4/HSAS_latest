@@ -177,7 +177,7 @@ nav img {
 					
 					<div class="form-group">
 						<label>IC Number</label> <input type="text" id="NRIC" readonly
-							value="${staff.NRIC}" class="locked-field">
+							value="0${staff.NRIC}" class="locked-field">
 					</div>
 					
 					<%-- Age Calculation Logic --%>

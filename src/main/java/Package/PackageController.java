@@ -219,7 +219,7 @@ public class PackageController extends HttpServlet {
 		    PackageDAO.createPackageTable(packageName, fieldNames, fieldTypes);
 		}
 		HttpSession session = request.getSession();
-		session.setAttribute("message", "Package added successfully!");
+		session.setAttribute("message", "Package Successfully added");
 		response.sendRedirect("PackageController?action=list");
 
 	}
