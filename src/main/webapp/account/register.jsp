@@ -84,6 +84,18 @@
                     </span>
                   </div>
                 </div>
+                
+                <!-- Confirm Password -->
+				<div class="col-12">
+				  <label for="confirmPassword" class="form-label">Confirm Password</label>
+				  <div class="input-group">
+				    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" 
+				            pattern=".{8,}" title="Minimum 8 characters" required>
+				    <span class="input-group-text" id="toggleConfirmPassword" style="cursor: pointer;">
+				      <i class="bi bi-eye-slash-fill" id="eyeIconConfirm"></i>
+				    </span>
+				  </div>
+				</div>
 
                 <!-- Upload Image -->
                 <div class="col-12">
