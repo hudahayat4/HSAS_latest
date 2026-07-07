@@ -368,6 +368,11 @@ public class CustomerController extends HttpServlet {
 		if (valid) {
 			CustomerDAO.markAsVerified(cust.getCustEmail());
 			request.getSession().removeAttribute("tempCustomer");
+			
+			//Bahagian yang keluar notifikasi kalau berjaya verify
+			request.getSession().setAttribute("loginMessage", "Your account has been verified. You may now log in.");
+		    request.getSession().setAttribute("loginMessageType", "success");
+		    
 			response.sendRedirect(request.getContextPath() + "/log_in.jsp");
 		} else {
 			request.setAttribute("alertMessage", "The code is invalid or has expired.");

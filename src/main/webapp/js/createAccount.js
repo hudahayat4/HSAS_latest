@@ -7,8 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const emailInput = document.getElementById('custEmail');
     const usernameInput = document.getElementById('custUsername');
     const passwordInput = document.getElementById('custPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
     const togglePassword = document.getElementById('togglePassword');
     const eyeIcon = document.getElementById('eyeIcon');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const eyeIconConfirm = document.getElementById('eyeIconConfirm');
     const fileInput = document.getElementById('custProfilePic');
     const agreeCheckbox = document.getElementById('iAgree');
 
@@ -37,6 +40,15 @@ document.addEventListener('DOMContentLoaded', function() {
             passwordInput.setAttribute('type', type);
             eyeIcon.classList.toggle('bi-eye-fill');
             eyeIcon.classList.toggle('bi-eye-slash-fill');
+        });
+    }
+
+    if (toggleConfirmPassword) {
+        toggleConfirmPassword.addEventListener('click', function() {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
+            eyeIconConfirm.classList.toggle('bi-eye-fill');
+            eyeIconConfirm.classList.toggle('bi-eye-slash-fill');
         });
     }
 
@@ -73,33 +85,48 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
         }
 
-		// Validate File Size (Max 5MB)
-		if (fileInput.files.length === 0) {
-		    Swal.fire({
-		        icon: 'error',
-		        title: 'Upload Error',
-		        text: 'Please upload an image.',
-		        confirmButtonText: 'OK'
-		    });
-		    isValid = false;
-		} else {
-		    const fileSize = fileInput.files[0].size / 1024 / 1024; // MB
-		    if (fileSize > 5) {
-		        Swal.fire({
-		            icon: 'error',
-		            title: 'Upload Error',
-		            text: 'The uploaded image exceeds the 5MB size limit.',
-		            confirmButtonText: 'OK'
-		        });
-		        isValid = false;
-		    }
-		}
+        // Validate Password Confirmation
+        const passwordValue = passwordInput.value.trim();
+        const confirmPasswordValue = confirmPasswordInput.value.trim();
+        if (passwordValue !== confirmPasswordValue) {
+            event.preventDefault(); // hentikan submit terus
+            Swal.fire({
+                icon: 'error',
+                title: 'Password mismatch',
+                text: 'Password and Confirm Password must be the same.'
+            });
+            return; // keluar awal supaya tak teruskan submit
+        }
 
+        // Validate File Size (Max 5MB)
+        if (fileInput.files.length === 0) {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Upload Error',
+                text: 'Please upload an image.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        } else {
+            const fileSize = fileInput.files[0].size / 1024 / 1024; // MB
+            if (fileSize > 5) {
+                event.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Upload Error',
+                    text: 'The uploaded image exceeds the 5MB size limit.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+        }
 
         // Validate Terms and Conditions Checkbox
         if (!agreeCheckbox.checked) {
+            event.preventDefault();
             alert("You must agree to the terms and conditions.");
-            isValid = false;
+            return;
         }
 
         // Stop form submission if invalid
