@@ -65,19 +65,26 @@ public class resultController extends HttpServlet {
 
 	private void viewMore(HttpServletRequest request, HttpServletResponse response) 
 	        throws ServletException, IOException {
+		String appointmentIdStr = request.getParameter("appointmentID");
 
-		String resultID = request.getParameter("resultID");
+	    if (appointmentIdStr != null) {
 
-		if (resultID != null) {
-	        int appointmentID = 0;
+	        int appointmentID;
+
 	        try {
-	            appointmentID = Integer.parseInt(resultID);
+	            appointmentID = Integer.parseInt(appointmentIdStr);
 	        } catch (NumberFormatException e) {
+
+	            request.getSession().setAttribute(
+	                "errorMessage",
+	                "Result is not available yet."
+	            );
+
 	            response.sendRedirect("resultController?action=list");
 	            return;
 	        }
 
-	        // Call DAO
+	        // Check whether result exists
 	        Result result = ResultDAO.getResultByAppointmentId(appointmentID);
 
 	        if (result != null) {
@@ -92,11 +99,21 @@ public class resultController extends HttpServlet {
 
 	            request.getSession().setAttribute(
 	                "errorMessage",
-	                "The result is not available yet."
+	                "Result is not available yet."
 	            );
+
 
 	            response.sendRedirect("resultController?action=list");
 	        }
+
+	    } else {
+
+	        request.getSession().setAttribute(
+	            "errorMessage",
+	            "Result is not available yet."
+	        );
+
+	        response.sendRedirect("resultController?action=list");
 	    }
 	}
 
