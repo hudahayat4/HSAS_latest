@@ -25,6 +25,18 @@
 		    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		  </div>
 		</c:if>
+	
+	<!-- ACCOUNT VERIFIED -->
+	<c:if test="${not empty sessionScope.loginMessage}">
+	  <div class="alert alert-${sessionScope.loginMessageType} alert-dismissible fade show text-center floating-alert" role="alert">
+	    ${sessionScope.loginMessage}
+	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	  </div>
+	  <c:remove var="loginMessage" scope="session"/>
+	  <c:remove var="loginMessageType" scope="session"/>
+	 </c:if>
+	
+	
     <div class="container position-relative">
        
       <div class="row justify-content-center">
