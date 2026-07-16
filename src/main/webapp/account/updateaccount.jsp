@@ -105,7 +105,7 @@
 
 					<div class="form-group">
 						<label>IC Number</label> <input type="text" name="cusNRIC"
-							id="cusNRIC" value="${customer.cusNRIC}"
+							id="cusNRIC" value="0${customer.cusNRIC}"
 							class="form-control editable-field" maxlength="12"
 							placeholder="YYMMDDXXXXXX" required>
 						<div id="icError" class="error-message">

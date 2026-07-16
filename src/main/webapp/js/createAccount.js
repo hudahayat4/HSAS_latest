@@ -70,6 +70,18 @@ document.addEventListener('DOMContentLoaded', function() {
         icErrorDiv.textContent = "";
         emailErrorDiv.textContent = "";
         usernameErrorDiv.textContent = "";
+		
+		// Validate IC (Must be exactly 12 digits)
+		const emailValue = emailInput.value.trim();
+		if (emailValue.length == "") {
+		    emailErrorDiv.textContent = "Please fill the required field.";
+		    isValid = false;
+		} else if (!/^\d{12}$/.test(emailValue)) {
+		    emailErrorDiv.textContent = "Missing @ in email";
+		    isValid = false;
+		} else {
+		    emailErrorDiv.textContent = "";
+		}
 
         // Validate IC (Must be exactly 12 digits)
         const icValue = icInput.value.trim();

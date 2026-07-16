@@ -20,9 +20,8 @@
 <body>
   <section class="min-vh-100 d-flex align-items-center bg-page">
   <c:if test="${not empty errorMsg}">
-		  <div class="alert alert-danger alert-dismissible fade show text-center floating-alert" role="alert">
+		  <div id="errorAlert" class="alert alert-danger alert-dismissible fade show text-center floating-alert" role="alert">
 		    ${errorMsg}
-		    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		  </div>
 		</c:if>
 	
@@ -132,5 +131,17 @@
   </section>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/logIn.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+	    const alert = document.getElementById("errorAlert");
+
+	    if (alert) {
+	        setTimeout(function () {
+	            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+	            bsAlert.close();
+	        }, 1000); // 1000ms = 1 second
+	    }
+	});
+  </script>
 </body>
 </html>

@@ -156,8 +156,9 @@
 									</span> <input type="text" class="form-control" id="packageName"
 										placeholder="Health Screening Type" pattern="^[A-Za-z0-9_]+$"
 										name="packageName"> <span class="error-icon"><i
-										class="bi bi-exclamation-triangle-fill"></i></span> <small
-										id="packageNameError" class="text-danger"></small>
+										class="bi bi-exclamation-triangle-fill"></i></span>
+										<div class="error-message">Enter a package name</div>
+										<small id="packageNameError" class="text-danger"></small>
 								</div>
 
 								<div class="col-md-6 mb-3 position-relative">
