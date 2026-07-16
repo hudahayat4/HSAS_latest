@@ -87,7 +87,8 @@ body {
 				<div class="col-md-6">
 					<label for="exampleFormControlInput1" class="form-label">IC
 						number</label> <input type="text" class="form-control" id="NRIC"
-						name="NRIC">
+						name="NRIC" inputmode="numeric" max="12"> <small id="ICError"
+						class="text-danger"></small>
 				</div>
 				<br>
 				<div class="row">
@@ -156,9 +157,11 @@ body {
 	        // ================= ELEMENTS =================
 	        const nameInput = document.getElementById("name");
 	        const phoneInput = document.getElementById("PhoneNo");
+	        const ICInput = document.getElementById("NRIC");
 	        const emailInput = document.getElementById("email");
 
 	        const nameError = document.getElementById("nameError");
+	        const ICError = document.getElementById("ICError");
 	        const phoneError = document.getElementById("phoneError");
 	        const emailError = document.getElementById("emailError");
 
@@ -190,6 +193,21 @@ body {
 			    this.value = rawValue.replace(/\D/g, '');
 
 			    this.value = rawValue.replace(/\D/g, '').slice(0, 11);
+			});
+	        
+	     // ================= PHONE =================
+	        ICInput.addEventListener("input", function () {
+			    let rawValue = this.value;
+			
+			    if (/[^0-9]/.test(rawValue)) {
+			        ICError.textContent = "IC number must contain numbers only";
+			    } else {
+			        ICError.textContent = "";
+			    }
+			
+			    this.value = rawValue.replace(/\D/g, '');
+
+			    this.value = rawValue.replace(/\D/g, '').slice(0, 12);
 			});
 
 

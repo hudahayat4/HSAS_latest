@@ -31,7 +31,7 @@
 					
 					<button class="add-btn"
 						onclick="location.href='createStaffAccount.jsp'">
-						<i class="fas fa-plus"></i> Add new team
+						<i class="fas fa-plus"></i> Add New Staff
 					</button>
 				</div>
 
