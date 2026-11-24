@@ -1,0 +1,19 @@
+name: Deploy on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy ke Server
+        run: |
+          echo "Memulakan deployment untuk versi ${{ github.ref_name }}"
+          # Letakkan arahan build / SSH / deploy anda di sini
